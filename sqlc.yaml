@@ -1,0 +1,13 @@
+version: "2"
+sql:
+  - schema: "migrations/postgres"
+    queries: "internal/clients/postgres"
+    engine: "postgresql"
+    gen:
+      go:
+        emit_interface: true
+        package: "sqlc"
+        out: "internal/clients/postgres/sqlc"
+        overrides:
+          - db_type: "uuid"
+            go_type: "github.com/google/uuid.UUID"

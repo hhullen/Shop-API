@@ -1,0 +1,1036 @@
+basePath: /api/v1
+definitions:
+  datastruct.AddClientRequest:
+    properties:
+      address:
+        $ref: '#/definitions/datastruct.Address'
+      birthday:
+        example: 10.12.2011
+        type: string
+      client_name:
+        example: Vasilisa
+        type: string
+      client_surname:
+        example: Kadyk
+        type: string
+      gender:
+        allOf:
+        - $ref: '#/definitions/datastruct.Gender'
+        example: female
+      registration_date:
+        example: 30/01/2026
+        type: string
+      uid:
+        example: 4988150e-1c82-490f-8c07-ee74ace2dd14
+        type: string
+    required:
+    - address
+    - birthday
+    - client_name
+    - client_surname
+    - gender
+    - registration_date
+    type: object
+  datastruct.AddClientResponse:
+    properties:
+      uid:
+        type: string
+    type: object
+  datastruct.AddImageResponse:
+    properties:
+      status:
+        example: status message
+        type: string
+      uid:
+        type: string
+    type: object
+  datastruct.AddProductRequest:
+    properties:
+      available_stock:
+        example: 1023
+        type: integer
+      category:
+        example: construction
+        type: string
+      image_id:
+        example: 376de312-5bcb-4320-8ba3-bd2050548229
+        type: string
+      last_update_date:
+        example: 31.01.2026
+        type: string
+      name:
+        example: Wooden beam
+        type: string
+      price:
+        example: 299.95
+        type: number
+      supplier_id:
+        example: 609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4
+        type: string
+      uid:
+        example: c85a189d-d173-42e2-8e00-54395234d93d
+        type: string
+    required:
+    - available_stock
+    - category
+    - image_id
+    - name
+    - price
+    - supplier_id
+    type: object
+  datastruct.AddProductResponse:
+    properties:
+      status:
+        example: status message
+        type: string
+      uid:
+        type: string
+    type: object
+  datastruct.AddSupplierRequest:
+    properties:
+      address:
+        $ref: '#/definitions/datastruct.Address'
+      name:
+        example: Vasilisa&Drozzhi .ltd
+        type: string
+      phone_number:
+        example: +79336579933 RU
+        type: string
+      uid:
+        example: 609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4
+        type: string
+    required:
+    - address
+    - name
+    - phone_number
+    type: object
+  datastruct.AddSupplierResponse:
+    properties:
+      uid:
+        type: string
+    type: object
+  datastruct.Address:
+    properties:
+      city:
+        example: Seattle
+        type: string
+      country:
+        example: USA
+        type: string
+      street:
+        example: 12th Ave E
+        type: string
+    required:
+    - city
+    - country
+    - street
+    type: object
+  datastruct.Client:
+    properties:
+      address:
+        $ref: '#/definitions/datastruct.Address'
+      birthday:
+        example: 10.12.2011
+        type: string
+      client_name:
+        example: Vasilisa
+        type: string
+      client_surname:
+        example: Kadyk
+        type: string
+      gender:
+        allOf:
+        - $ref: '#/definitions/datastruct.Gender'
+        example: female
+      registration_date:
+        example: 30/01/2026
+        type: string
+      uid:
+        example: 4988150e-1c82-490f-8c07-ee74ace2dd14
+        type: string
+    required:
+    - address
+    - birthday
+    - client_name
+    - client_surname
+    - gender
+    - registration_date
+    type: object
+  datastruct.DecreaseProductsRequest:
+    properties:
+      amount:
+        example: 3
+        type: integer
+      uid:
+        example: c85a189d-d173-42e2-8e00-54395234d93d
+        type: string
+    required:
+    - amount
+    - uid
+    type: object
+  datastruct.DecreaseProductsResponse:
+    properties:
+      left:
+        type: integer
+      status:
+        example: status message
+        type: string
+    type: object
+  datastruct.DeleteClientRequest:
+    properties:
+      uid:
+        example: 4988150e-1c82-490f-8c07-ee74ace2dd14
+        type: string
+    required:
+    - uid
+    type: object
+  datastruct.DeleteClientResponse:
+    properties:
+      status:
+        example: status message
+        type: string
+    type: object
+  datastruct.DeleteImageRequest:
+    properties:
+      uid:
+        example: 376de312-5bcb-4320-8ba3-bd2050548229
+        type: string
+    required:
+    - uid
+    type: object
+  datastruct.DeleteImageResponse:
+    properties:
+      status:
+        example: status message
+        type: string
+    type: object
+  datastruct.DeleteProductRequest:
+    properties:
+      uid:
+        example: c85a189d-d173-42e2-8e00-54395234d93d
+        type: string
+    required:
+    - uid
+    type: object
+  datastruct.DeleteProductResponse:
+    properties:
+      status:
+        example: status message
+        type: string
+    type: object
+  datastruct.DeleteSupplierRequest:
+    properties:
+      uid:
+        example: 609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4
+        type: string
+    required:
+    - uid
+    type: object
+  datastruct.DeleteSupplierResponse:
+    properties:
+      status:
+        example: status message
+        type: string
+    type: object
+  datastruct.Gender:
+    enum:
+    - male
+    - female
+    type: string
+    x-enum-varnames:
+    - Male
+    - Female
+  datastruct.GetClientsByNameResponse:
+    properties:
+      clients:
+        items:
+          $ref: '#/definitions/datastruct.Client'
+        type: array
+    type: object
+  datastruct.GetClientsResponse:
+    properties:
+      clients:
+        items:
+          $ref: '#/definitions/datastruct.Client'
+        type: array
+    type: object
+  datastruct.GetImageResponse:
+    properties:
+      image:
+        items:
+          type: integer
+        type: array
+      status:
+        example: status message
+        type: string
+      uid:
+        type: string
+    type: object
+  datastruct.GetProductImageResponse:
+    properties:
+      image:
+        items:
+          type: integer
+        type: array
+      status:
+        example: status message
+        type: string
+      uid:
+        type: string
+    type: object
+  datastruct.GetProductResponse:
+    properties:
+      product:
+        $ref: '#/definitions/datastruct.Product'
+      status:
+        example: status message
+        type: string
+    type: object
+  datastruct.GetProductsResponse:
+    properties:
+      products:
+        items:
+          $ref: '#/definitions/datastruct.Product'
+        type: array
+    type: object
+  datastruct.GetSupplierResponse:
+    properties:
+      status:
+        example: status message
+        type: string
+      supplier:
+        $ref: '#/definitions/datastruct.Supplier'
+    type: object
+  datastruct.GetSuppliersResponse:
+    properties:
+      suppliers:
+        items:
+          $ref: '#/definitions/datastruct.Supplier'
+        type: array
+    type: object
+  datastruct.PatchClientAddressRequest:
+    properties:
+      address:
+        $ref: '#/definitions/datastruct.Address'
+      uid:
+        example: 4988150e-1c82-490f-8c07-ee74ace2dd14
+        type: string
+    required:
+    - address
+    - uid
+    type: object
+  datastruct.PatchClientAddressResponse:
+    properties:
+      status:
+        example: status message
+        type: string
+    type: object
+  datastruct.Product:
+    properties:
+      available_stock:
+        example: 1023
+        type: integer
+      category:
+        example: construction
+        type: string
+      image_id:
+        example: 376de312-5bcb-4320-8ba3-bd2050548229
+        type: string
+      last_update_date:
+        example: 31.01.2026
+        type: string
+      name:
+        example: Wooden beam
+        type: string
+      price:
+        example: 299.95
+        type: number
+      supplier_id:
+        example: 609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4
+        type: string
+      uid:
+        example: c85a189d-d173-42e2-8e00-54395234d93d
+        type: string
+    required:
+    - available_stock
+    - category
+    - image_id
+    - name
+    - price
+    - supplier_id
+    type: object
+  datastruct.Status:
+    properties:
+      status:
+        example: status message
+        type: string
+    type: object
+  datastruct.Supplier:
+    properties:
+      address:
+        $ref: '#/definitions/datastruct.Address'
+      name:
+        example: Vasilisa&Drozzhi .ltd
+        type: string
+      phone_number:
+        example: +79336579933 RU
+        type: string
+      uid:
+        example: 609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4
+        type: string
+    required:
+    - address
+    - name
+    - phone_number
+    type: object
+  datastruct.UpdateImageResponse:
+    properties:
+      status:
+        example: status message
+        type: string
+    type: object
+  datastruct.UpdateSupplierAddressRequest:
+    properties:
+      address:
+        $ref: '#/definitions/datastruct.Address'
+      uid:
+        example: 609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4
+        type: string
+    required:
+    - address
+    - uid
+    type: object
+  datastruct.UpdateSupplierAddressResponse:
+    properties:
+      status:
+        example: status message
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: hhullen@gmail.com
+    name: Maksim
+    url: https://github.com/hhullen
+  description: Cервер на Golang с OpenAPI документацией.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Shop API
+  version: "1.0"
+paths:
+  /client:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет клиента по его uid
+      parameters:
+      - description: uid клиента
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/datastruct.DeleteClientRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.DeleteClientResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.DeleteClientResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+      summary: Удаление клиента
+      tags:
+      - Client
+    post:
+      consumes:
+      - application/json
+      description: Добавление клиента. Если клиент существует вернется uid существующего
+        клиента.
+      parameters:
+      - description: Информация о клиенте
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/datastruct.AddClientRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.AddClientResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+      summary: Добавление клиента
+      tags:
+      - Client
+  /client/address:
+    patch:
+      consumes:
+      - application/json
+      description: Обновляет адрес клиента по его uid
+      parameters:
+      - description: uid и адрес
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/datastruct.PatchClientAddressRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.PatchClientAddressResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.PatchClientAddressResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+      summary: Обновляет адрес клиента
+      tags:
+      - Client
+  /clients:
+    get:
+      description: Возвращает список клиентов. Если offset limit равны 0, вернет список
+        всех клиентов
+      parameters:
+      - description: offset
+        example: "0"
+        in: query
+        name: offset
+        required: true
+        type: string
+      - description: limit
+        example: "10"
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.GetClientsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+      summary: Возвращает список клиентов
+      tags:
+      - Client
+  /clients/named:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает клиентов по имени и фамилии
+      parameters:
+      - description: client_name
+        example: Vasilisa
+        in: query
+        name: client_name
+        type: string
+      - description: client_surname
+        example: Kadyk
+        in: query
+        name: client_surname
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.GetClientsByNameResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+      summary: Возвращает клиентов по имени и фамилии
+      tags:
+      - Client
+  /image:
+    delete:
+      consumes:
+      - application/json
+      description: удаляет изображение
+      parameters:
+      - description: uid
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/datastruct.DeleteImageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.DeleteImageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.DeleteImageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+      summary: удаляет изображение
+      tags:
+      - Image
+    get:
+      description: Возвращает изображение
+      parameters:
+      - description: uid
+        example: '"376de312-5bcb-4320-8ba3-bd2050548229"'
+        in: query
+        name: uid
+        required: true
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.GetImageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+      summary: Возвращает изображение
+      tags:
+      - Image
+    patch:
+      consumes:
+      - multipart/form-data
+      description: обновить существующее изображение
+      parameters:
+      - description: uid
+        example: '"376de312-5bcb-4320-8ba3-bd2050548229"'
+        in: formData
+        name: uid
+        required: true
+        type: string
+      - description: Файл изображения
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.UpdateImageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.UpdateImageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+      summary: обновить изображение
+      tags:
+      - Image
+    post:
+      consumes:
+      - multipart/form-data
+      description: добавляет новое изображение
+      parameters:
+      - description: uid
+        example: '"376de312-5bcb-4320-8ba3-bd2050548229"'
+        in: formData
+        name: uid
+        type: string
+      - description: Файл изображения
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.AddImageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.AddImageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+      summary: Добавляет новое изображение
+      tags:
+      - Image
+  /image/product:
+    get:
+      description: Возвращает изображение продукта
+      parameters:
+      - description: product_uid
+        example: '"c85a189d-d173-42e2-8e00-54395234d93d"'
+        in: query
+        name: product_uid
+        required: true
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.GetProductImageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+      summary: Возвращает изображение продукта
+      tags:
+      - Image
+  /product:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление продукта.
+      parameters:
+      - description: uid
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/datastruct.DeleteProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.DeleteProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.DeleteProductResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+      summary: Удаление продукта
+      tags:
+      - Product
+    get:
+      description: Возвращает продукт.
+      parameters:
+      - description: uid
+        example: '"c85a189d-d173-42e2-8e00-54395234d93d"'
+        in: query
+        name: uid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.GetProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.GetProductResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+      summary: Возвращает продукт
+      tags:
+      - Product
+    patch:
+      consumes:
+      - application/json
+      description: Убавление количества продукта.
+      parameters:
+      - description: uid и уколичество
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/datastruct.DecreaseProductsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.DecreaseProductsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.DecreaseProductsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+      summary: Убавление количества продукта
+      tags:
+      - Product
+    post:
+      consumes:
+      - application/json
+      description: Добавление продукта. Если продукт существует, обновится цена, количество
+        в наличии, дата обновления и вернется uid этого продукта.
+      parameters:
+      - description: Информация о продукте
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/datastruct.AddProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.AddProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.AddProductResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+      summary: Добавление продукта
+      tags:
+      - Product
+  /products:
+    get:
+      description: Возвращает список продуктов. Если offset limit равны 0, вернет
+        список всех
+      parameters:
+      - description: offset
+        example: "0"
+        in: query
+        name: offset
+        required: true
+        type: string
+      - description: limit
+        example: "10"
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.GetProductsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.Status'
+      summary: Возвращает список продуктов
+      tags:
+      - Product
+  /supplier:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление поставщика
+      parameters:
+      - description: uid
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/datastruct.DeleteSupplierRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.DeleteSupplierResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.DeleteSupplierResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.DeleteSupplierResponse'
+      summary: Удаление поставщика
+      tags:
+      - Supplier
+    get:
+      description: Возвращает поставщика
+      parameters:
+      - description: uid
+        example: '"609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"'
+        in: query
+        name: uid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.GetSupplierResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.GetSupplierResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.GetSupplierResponse'
+      summary: Возвращает поставщика
+      tags:
+      - Supplier
+    post:
+      consumes:
+      - application/json
+      description: Добавление поставщика. Если поставщик существует, вернется uid
+        этого поставщика.
+      parameters:
+      - description: Информация о поставщике
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/datastruct.AddSupplierRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.AddSupplierResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.AddSupplierResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.AddSupplierResponse'
+      summary: Добавление поставщика
+      tags:
+      - Supplier
+  /supplier/address:
+    patch:
+      consumes:
+      - application/json
+      description: Обновление адреса поставщика
+      parameters:
+      - description: uid и адрес
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/datastruct.UpdateSupplierAddressRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.UpdateSupplierAddressResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.UpdateSupplierAddressResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.UpdateSupplierAddressResponse'
+      summary: Обновление адреса поставщика
+      tags:
+      - Supplier
+  /suppliers:
+    get:
+      description: Возвращает поставщиков
+      parameters:
+      - description: offset
+        example: "0"
+        in: query
+        name: offset
+        required: true
+        type: string
+      - description: limit
+        example: "10"
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/datastruct.GetSuppliersResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/datastruct.GetSuppliersResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/datastruct.GetSuppliersResponse'
+      summary: Возвращает поставщиков
+      tags:
+      - Supplier
+swagger: "2.0"

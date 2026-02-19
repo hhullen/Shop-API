@@ -1,0 +1,57 @@
+name: shop_api
+
+services:
+  shopapi:
+    container_name: shopapi
+    build:
+      context: .
+      dockerfile: ./cmd/shopapi/Dockerfile
+    ports:
+      - 8080:8080
+    init: true
+    restart: always
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+
+  migrator:
+    container_name: migrator
+    build:
+      context: .
+      dockerfile: ./cmd/migrator/Dockerfile
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    container_name: db
+    image: postgres:17.5-alpine3.21
+    restart: always
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password_secret
+      POSTGRES_USER_FILE: /run/secrets/db_user_secret
+      POSTGRES_DB_FILE: /run/secrets/db_name_secret
+    secrets:
+      - db_password_secret
+      - db_user_secret
+      - db_name_secret
+    volumes:
+      - shopapi_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$(cat /run/secrets/db_user_secret) -d $$(cat /run/secrets/db_name_secret)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+secrets:
+  db_password_secret:
+    file: ./secrets/db_password.txt
+  db_user_secret:
+    file: ./secrets/db_user.txt
+  db_name_secret:
+    file: ./secrets/db_name.txt
+
+volumes:
+  shopapi_postgres_data:

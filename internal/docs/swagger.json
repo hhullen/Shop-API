@@ -1,0 +1,1524 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Cервер на Golang с OpenAPI документацией.",
+        "title": "Shop API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Maksim",
+            "url": "https://github.com/hhullen",
+            "email": "hhullen@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/client": {
+            "post": {
+                "description": "Добавление клиента. Если клиент существует вернется uid существующего клиента.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Добавление клиента",
+                "parameters": [
+                    {
+                        "description": "Информация о клиенте",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.AddClientRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.AddClientResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаляет клиента по его uid",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Удаление клиента",
+                "parameters": [
+                    {
+                        "description": "uid клиента",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DeleteClientRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DeleteClientResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DeleteClientResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    }
+                }
+            }
+        },
+        "/client/address": {
+            "patch": {
+                "description": "Обновляет адрес клиента по его uid",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Обновляет адрес клиента",
+                "parameters": [
+                    {
+                        "description": "uid и адрес",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.PatchClientAddressRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.PatchClientAddressResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.PatchClientAddressResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    }
+                }
+            }
+        },
+        "/clients": {
+            "get": {
+                "description": "Возвращает список клиентов. Если offset limit равны 0, вернет список всех клиентов",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Возвращает список клиентов",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "10",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.GetClientsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    }
+                }
+            }
+        },
+        "/clients/named": {
+            "get": {
+                "description": "Возвращает клиентов по имени и фамилии",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Возвращает клиентов по имени и фамилии",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "Vasilisa",
+                        "description": "client_name",
+                        "name": "client_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "Kadyk",
+                        "description": "client_surname",
+                        "name": "client_surname",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.GetClientsByNameResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    }
+                }
+            }
+        },
+        "/image": {
+            "get": {
+                "description": "Возвращает изображение",
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "Image"
+                ],
+                "summary": "Возвращает изображение",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"376de312-5bcb-4320-8ba3-bd2050548229\"",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.GetImageResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "добавляет новое изображение",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Image"
+                ],
+                "summary": "Добавляет новое изображение",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"376de312-5bcb-4320-8ba3-bd2050548229\"",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "file",
+                        "description": "Файл изображения",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.AddImageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.AddImageResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "удаляет изображение",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Image"
+                ],
+                "summary": "удаляет изображение",
+                "parameters": [
+                    {
+                        "description": "uid",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DeleteImageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DeleteImageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DeleteImageResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "обновить существующее изображение",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Image"
+                ],
+                "summary": "обновить изображение",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"376de312-5bcb-4320-8ba3-bd2050548229\"",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Файл изображения",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.UpdateImageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.UpdateImageResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    }
+                }
+            }
+        },
+        "/image/product": {
+            "get": {
+                "description": "Возвращает изображение продукта",
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "Image"
+                ],
+                "summary": "Возвращает изображение продукта",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"c85a189d-d173-42e2-8e00-54395234d93d\"",
+                        "description": "product_uid",
+                        "name": "product_uid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.GetProductImageResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    }
+                }
+            }
+        },
+        "/product": {
+            "get": {
+                "description": "Возвращает продукт.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Возвращает продукт",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"c85a189d-d173-42e2-8e00-54395234d93d\"",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.GetProductResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.GetProductResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Добавление продукта. Если продукт существует, обновится цена, количество в наличии, дата обновления и вернется uid этого продукта.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Добавление продукта",
+                "parameters": [
+                    {
+                        "description": "Информация о продукте",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.AddProductRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.AddProductResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.AddProductResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаление продукта.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Удаление продукта",
+                "parameters": [
+                    {
+                        "description": "uid",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DeleteProductRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DeleteProductResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DeleteProductResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Убавление количества продукта.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Убавление количества продукта",
+                "parameters": [
+                    {
+                        "description": "uid и уколичество",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DecreaseProductsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DecreaseProductsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DecreaseProductsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    }
+                }
+            }
+        },
+        "/products": {
+            "get": {
+                "description": "Возвращает список продуктов. Если offset limit равны 0, вернет список всех",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Возвращает список продуктов",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "10",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.GetProductsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.Status"
+                        }
+                    }
+                }
+            }
+        },
+        "/supplier": {
+            "get": {
+                "description": "Возвращает поставщика",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Возвращает поставщика",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4\"",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.GetSupplierResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.GetSupplierResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.GetSupplierResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Добавление поставщика. Если поставщик существует, вернется uid этого поставщика.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Добавление поставщика",
+                "parameters": [
+                    {
+                        "description": "Информация о поставщике",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.AddSupplierRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.AddSupplierResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.AddSupplierResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.AddSupplierResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаление поставщика",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Удаление поставщика",
+                "parameters": [
+                    {
+                        "description": "uid",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DeleteSupplierRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DeleteSupplierResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DeleteSupplierResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.DeleteSupplierResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/supplier/address": {
+            "patch": {
+                "description": "Обновление адреса поставщика",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Обновление адреса поставщика",
+                "parameters": [
+                    {
+                        "description": "uid и адрес",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.UpdateSupplierAddressRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.UpdateSupplierAddressResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.UpdateSupplierAddressResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.UpdateSupplierAddressResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/suppliers": {
+            "get": {
+                "description": "Возвращает поставщиков",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Возвращает поставщиков",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "10",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.GetSuppliersResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.GetSuppliersResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/datastruct.GetSuppliersResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "datastruct.AddClientRequest": {
+            "type": "object",
+            "required": [
+                "address",
+                "birthday",
+                "client_name",
+                "client_surname",
+                "gender",
+                "registration_date"
+            ],
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/datastruct.Address"
+                },
+                "birthday": {
+                    "type": "string",
+                    "example": "10.12.2011"
+                },
+                "client_name": {
+                    "type": "string",
+                    "example": "Vasilisa"
+                },
+                "client_surname": {
+                    "type": "string",
+                    "example": "Kadyk"
+                },
+                "gender": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/datastruct.Gender"
+                        }
+                    ],
+                    "example": "female"
+                },
+                "registration_date": {
+                    "type": "string",
+                    "example": "30/01/2026"
+                },
+                "uid": {
+                    "type": "string",
+                    "example": "4988150e-1c82-490f-8c07-ee74ace2dd14"
+                }
+            }
+        },
+        "datastruct.AddClientResponse": {
+            "type": "object",
+            "properties": {
+                "uid": {
+                    "type": "string"
+                }
+            }
+        },
+        "datastruct.AddImageResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                },
+                "uid": {
+                    "type": "string"
+                }
+            }
+        },
+        "datastruct.AddProductRequest": {
+            "type": "object",
+            "required": [
+                "available_stock",
+                "category",
+                "image_id",
+                "name",
+                "price",
+                "supplier_id"
+            ],
+            "properties": {
+                "available_stock": {
+                    "type": "integer",
+                    "example": 1023
+                },
+                "category": {
+                    "type": "string",
+                    "example": "construction"
+                },
+                "image_id": {
+                    "type": "string",
+                    "example": "376de312-5bcb-4320-8ba3-bd2050548229"
+                },
+                "last_update_date": {
+                    "type": "string",
+                    "example": "31.01.2026"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Wooden beam"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 299.95
+                },
+                "supplier_id": {
+                    "type": "string",
+                    "example": "609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"
+                },
+                "uid": {
+                    "type": "string",
+                    "example": "c85a189d-d173-42e2-8e00-54395234d93d"
+                }
+            }
+        },
+        "datastruct.AddProductResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                },
+                "uid": {
+                    "type": "string"
+                }
+            }
+        },
+        "datastruct.AddSupplierRequest": {
+            "type": "object",
+            "required": [
+                "address",
+                "name",
+                "phone_number"
+            ],
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/datastruct.Address"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Vasilisa\u0026Drozzhi .ltd"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "example": "+79336579933 RU"
+                },
+                "uid": {
+                    "type": "string",
+                    "example": "609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"
+                }
+            }
+        },
+        "datastruct.AddSupplierResponse": {
+            "type": "object",
+            "properties": {
+                "uid": {
+                    "type": "string"
+                }
+            }
+        },
+        "datastruct.Address": {
+            "type": "object",
+            "required": [
+                "city",
+                "country",
+                "street"
+            ],
+            "properties": {
+                "city": {
+                    "type": "string",
+                    "example": "Seattle"
+                },
+                "country": {
+                    "type": "string",
+                    "example": "USA"
+                },
+                "street": {
+                    "type": "string",
+                    "example": "12th Ave E"
+                }
+            }
+        },
+        "datastruct.Client": {
+            "type": "object",
+            "required": [
+                "address",
+                "birthday",
+                "client_name",
+                "client_surname",
+                "gender",
+                "registration_date"
+            ],
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/datastruct.Address"
+                },
+                "birthday": {
+                    "type": "string",
+                    "example": "10.12.2011"
+                },
+                "client_name": {
+                    "type": "string",
+                    "example": "Vasilisa"
+                },
+                "client_surname": {
+                    "type": "string",
+                    "example": "Kadyk"
+                },
+                "gender": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/datastruct.Gender"
+                        }
+                    ],
+                    "example": "female"
+                },
+                "registration_date": {
+                    "type": "string",
+                    "example": "30/01/2026"
+                },
+                "uid": {
+                    "type": "string",
+                    "example": "4988150e-1c82-490f-8c07-ee74ace2dd14"
+                }
+            }
+        },
+        "datastruct.DecreaseProductsRequest": {
+            "type": "object",
+            "required": [
+                "amount",
+                "uid"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "integer",
+                    "example": 3
+                },
+                "uid": {
+                    "type": "string",
+                    "example": "c85a189d-d173-42e2-8e00-54395234d93d"
+                }
+            }
+        },
+        "datastruct.DecreaseProductsResponse": {
+            "type": "object",
+            "properties": {
+                "left": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                }
+            }
+        },
+        "datastruct.DeleteClientRequest": {
+            "type": "object",
+            "required": [
+                "uid"
+            ],
+            "properties": {
+                "uid": {
+                    "type": "string",
+                    "example": "4988150e-1c82-490f-8c07-ee74ace2dd14"
+                }
+            }
+        },
+        "datastruct.DeleteClientResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                }
+            }
+        },
+        "datastruct.DeleteImageRequest": {
+            "type": "object",
+            "required": [
+                "uid"
+            ],
+            "properties": {
+                "uid": {
+                    "type": "string",
+                    "example": "376de312-5bcb-4320-8ba3-bd2050548229"
+                }
+            }
+        },
+        "datastruct.DeleteImageResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                }
+            }
+        },
+        "datastruct.DeleteProductRequest": {
+            "type": "object",
+            "required": [
+                "uid"
+            ],
+            "properties": {
+                "uid": {
+                    "type": "string",
+                    "example": "c85a189d-d173-42e2-8e00-54395234d93d"
+                }
+            }
+        },
+        "datastruct.DeleteProductResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                }
+            }
+        },
+        "datastruct.DeleteSupplierRequest": {
+            "type": "object",
+            "required": [
+                "uid"
+            ],
+            "properties": {
+                "uid": {
+                    "type": "string",
+                    "example": "609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"
+                }
+            }
+        },
+        "datastruct.DeleteSupplierResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                }
+            }
+        },
+        "datastruct.Gender": {
+            "type": "string",
+            "enum": [
+                "male",
+                "female"
+            ],
+            "x-enum-varnames": [
+                "Male",
+                "Female"
+            ]
+        },
+        "datastruct.GetClientsByNameResponse": {
+            "type": "object",
+            "properties": {
+                "clients": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/datastruct.Client"
+                    }
+                }
+            }
+        },
+        "datastruct.GetClientsResponse": {
+            "type": "object",
+            "properties": {
+                "clients": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/datastruct.Client"
+                    }
+                }
+            }
+        },
+        "datastruct.GetImageResponse": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                },
+                "uid": {
+                    "type": "string"
+                }
+            }
+        },
+        "datastruct.GetProductImageResponse": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                },
+                "uid": {
+                    "type": "string"
+                }
+            }
+        },
+        "datastruct.GetProductResponse": {
+            "type": "object",
+            "properties": {
+                "product": {
+                    "$ref": "#/definitions/datastruct.Product"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                }
+            }
+        },
+        "datastruct.GetProductsResponse": {
+            "type": "object",
+            "properties": {
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/datastruct.Product"
+                    }
+                }
+            }
+        },
+        "datastruct.GetSupplierResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                },
+                "supplier": {
+                    "$ref": "#/definitions/datastruct.Supplier"
+                }
+            }
+        },
+        "datastruct.GetSuppliersResponse": {
+            "type": "object",
+            "properties": {
+                "suppliers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/datastruct.Supplier"
+                    }
+                }
+            }
+        },
+        "datastruct.PatchClientAddressRequest": {
+            "type": "object",
+            "required": [
+                "address",
+                "uid"
+            ],
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/datastruct.Address"
+                },
+                "uid": {
+                    "type": "string",
+                    "example": "4988150e-1c82-490f-8c07-ee74ace2dd14"
+                }
+            }
+        },
+        "datastruct.PatchClientAddressResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                }
+            }
+        },
+        "datastruct.Product": {
+            "type": "object",
+            "required": [
+                "available_stock",
+                "category",
+                "image_id",
+                "name",
+                "price",
+                "supplier_id"
+            ],
+            "properties": {
+                "available_stock": {
+                    "type": "integer",
+                    "example": 1023
+                },
+                "category": {
+                    "type": "string",
+                    "example": "construction"
+                },
+                "image_id": {
+                    "type": "string",
+                    "example": "376de312-5bcb-4320-8ba3-bd2050548229"
+                },
+                "last_update_date": {
+                    "type": "string",
+                    "example": "31.01.2026"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Wooden beam"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 299.95
+                },
+                "supplier_id": {
+                    "type": "string",
+                    "example": "609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"
+                },
+                "uid": {
+                    "type": "string",
+                    "example": "c85a189d-d173-42e2-8e00-54395234d93d"
+                }
+            }
+        },
+        "datastruct.Status": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                }
+            }
+        },
+        "datastruct.Supplier": {
+            "type": "object",
+            "required": [
+                "address",
+                "name",
+                "phone_number"
+            ],
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/datastruct.Address"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Vasilisa\u0026Drozzhi .ltd"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "example": "+79336579933 RU"
+                },
+                "uid": {
+                    "type": "string",
+                    "example": "609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"
+                }
+            }
+        },
+        "datastruct.UpdateImageResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                }
+            }
+        },
+        "datastruct.UpdateSupplierAddressRequest": {
+            "type": "object",
+            "required": [
+                "address",
+                "uid"
+            ],
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/datastruct.Address"
+                },
+                "uid": {
+                    "type": "string",
+                    "example": "609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"
+                }
+            }
+        },
+        "datastruct.UpdateSupplierAddressResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                }
+            }
+        }
+    }
+}
