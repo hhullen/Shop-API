@@ -9,8 +9,11 @@ import (
 
 	"shopapi/internal/api/v1"
 	"shopapi/internal/clients/postgres"
+	"shopapi/internal/clients/redis"
 	"shopapi/internal/logger"
+	"shopapi/internal/mem_cache"
 	"shopapi/internal/service"
+	"shopapi/internal/supports"
 )
 
 // @title           Shop API
@@ -43,7 +46,19 @@ func main() {
 
 	db := postgres.NewClient(ctx, conn)
 
-	s := service.NewService(ctx, serviceLog, db, db, db, db)
+	var cacher service.ICache
+
+	if !supports.IsInContainer() {
+		cacher = mem_cache.NewCache()
+	} else {
+		c, err := redis.NewRedisConn(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+		cacher = redis.NewClient(c)
+	}
+
+	s := service.NewService(ctx, serviceLog, cacher, db, db, db, db)
 	api := api.NewAPI(ctx, apiLog, s, s, s, s)
 
 	err = api.Start()

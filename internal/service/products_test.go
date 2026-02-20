@@ -94,19 +94,119 @@ func TestGetProduct(t *testing.T) {
 			Status: ds.Status{Message: "status"},
 		}
 
+		notCached := false
+
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(notCached, nil)
 		s.productStorageMock.EXPECT().GetProduct(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
 
 		resp := s.srv.GetProduct(req)
 		require.NotNil(t, resp)
+		require.False(t, resp.Cached)
 	})
 
-	t.Run("GetProduct error", func(t *testing.T) {
+	t.Run("GetProduct cached ok", func(t *testing.T) {
 		t.Parallel()
 
 		s := NewTestService(t)
 
 		req := &ds.GetProductRequest{}
+
+		cached := true
+
+		name := "name"
+		category := "category"
+		getCached := func(key string, v any) (bool, error) {
+			vv := v.(*ds.GetProductResponse)
+			vv.Product = &ds.Product{
+				Name:     name,
+				Category: category,
+			}
+			vv.Status = ds.Status{Message: "status"}
+			return cached, nil
+		}
+
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).DoAndReturn(getCached)
+		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
+
+		resp := s.srv.GetProduct(req)
+		require.NotNil(t, resp)
+		require.True(t, resp.Cached)
+		require.Equal(t, resp.Product.Name, name)
+		require.Equal(t, resp.Product.Category, category)
+	})
+
+	t.Run("GetProduct avoid cache ok", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetProductRequest{AvoidCache: true}
+
+		res := &ds.GetProductResponse{
+			Status: ds.Status{Message: "status"},
+		}
+
+		s.productStorageMock.EXPECT().GetProduct(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
+		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
+
+		resp := s.srv.GetProduct(req)
+		require.NotNil(t, resp)
+		require.False(t, resp.Cached)
+	})
+
+	t.Run("GetProduct error on Read", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetProductRequest{}
+
+		res := &ds.GetProductResponse{
+			Status: ds.Status{Message: "status"},
+		}
+
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, errTest)
+		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
+		s.productStorageMock.EXPECT().GetProduct(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
+		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
+
+		resp := s.srv.GetProduct(req)
+		require.NotNil(t, resp)
+		require.False(t, resp.Cached)
+	})
+
+	t.Run("GetProduct error on Write", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetProductRequest{}
+
+		res := &ds.GetProductResponse{
+			Status: ds.Status{Message: "status"},
+		}
+
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.productStorageMock.EXPECT().GetProduct(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(errTest)
+		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
+		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
+
+		resp := s.srv.GetProduct(req)
+		require.NotNil(t, resp)
+		require.False(t, resp.Cached)
+	})
+
+	t.Run("GetProduct error on GetProduct", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetProductRequest{AvoidCache: true}
 
 		s.productStorageMock.EXPECT().GetProduct(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())

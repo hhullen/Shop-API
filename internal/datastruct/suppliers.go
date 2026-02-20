@@ -68,10 +68,12 @@ type GetSuppliersResponse struct {
 }
 
 type GetSupplierRequest struct {
-	Uid uuid.UUID `json:"uid" validate:"required" example:"609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"`
+	Uid        uuid.UUID `schema:"uid" validate:"required" example:"609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"`
+	AvoidCache bool      `schema:"avoid_cache,omitempty" example:"true"`
 }
 
 type GetSupplierResponse struct {
 	Status
 	Supplier *Supplier `json:"supplier,omitempty"`
+	Cached   bool      `json:"cached,omitempty" example:"false"`
 }

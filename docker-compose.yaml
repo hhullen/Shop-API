@@ -13,6 +13,8 @@ services:
     depends_on:
       migrator:
         condition: service_completed_successfully
+    networks:
+      - shop_api_network
 
   migrator:
     container_name: migrator
@@ -23,6 +25,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - shop_api_network
 
   db:
     container_name: db
@@ -44,6 +48,21 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    networks:
+      - shop_api_network
+
+  redis_cache:
+    container_name: redis_cache
+    image: redis:8.2.4-alpine3.22
+    restart: always
+    command: >
+      sh -c "redis-server --requirepass $$(cat /run/secrets/redis_cache_password_secret)"
+    secrets:
+      - redis_cache_password_secret
+    volumes:
+      - shopapi_redis_data:/data
+    networks:
+      - shop_api_network
 
 secrets:
   db_password_secret:
@@ -52,6 +71,13 @@ secrets:
     file: ./secrets/db_user.txt
   db_name_secret:
     file: ./secrets/db_name.txt
+  redis_cache_password_secret:
+    file: ./secrets/redis_password.txt
 
 volumes:
   shopapi_postgres_data:
+  shopapi_redis_data:
+
+networks:
+  shop_api_network:
+    driver: bridge

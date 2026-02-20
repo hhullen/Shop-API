@@ -72,6 +72,7 @@ func (a *API) DeleteClient(w http.ResponseWriter, r *http.Request) {
 // @Produce      json
 // @Param        client_name    query  string false "client_name" example(Vasilisa)
 // @Param        client_surname query  string false "client_surname" example(Kadyk)
+// @Param        avoid_cache    query  string false "avoid_cache" example(true)
 // @Success      200  {object}  ds.GetClientsByNameResponse
 // @Failure      400  {object}  ds.Status
 // @Failure      500  {object}  ds.Status

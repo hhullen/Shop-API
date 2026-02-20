@@ -48,14 +48,36 @@ func (s *Service) GetSuppliers(req *ds.GetSuppliersRequest) *ds.GetSuppliersResp
 	return resp
 }
 
-func (s *Service) GetSupplier(req *ds.GetSupplierRequest) *ds.GetSupplierResponse {
-	resp, err := s.supplierStorage.GetSupplier(req)
-	if err != nil {
-		s.logger.ErrorKV("failed on GetSupplier", "message", err.Error())
-		return nil
+func (s *Service) GetSupplier(req *ds.GetSupplierRequest) (resp *ds.GetSupplierResponse) {
+	var cached bool
+	var err error
+
+	key := makeCacheKey(imagesCacheKey, req.Uid.String())
+	if !req.AvoidCache {
+		resp = &ds.GetSupplierResponse{}
+		cached, err = s.cache.Read(key, resp)
+		if err != nil {
+			s.logger.ErrorKV("failed reading cache on GetSupplier", "message", err.Error())
+		}
+	}
+
+	if !cached {
+		resp, err = s.supplierStorage.GetSupplier(req)
+		if err != nil {
+			s.logger.ErrorKV("failed on GetSupplier", "message", err.Error())
+			return nil
+		}
+
+		err = s.cache.Write(key, resp)
+		if err != nil {
+			s.logger.ErrorKV("failed writing cache on GetSupplier", "message", err.Error())
+		}
+		resp.Cached = false
+	} else {
+		resp.Cached = true
 	}
 
 	s.logHandlerStatus("GetSupplier", resp.GetStatus())
 
-	return resp
+	return
 }

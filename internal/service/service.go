@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 	ds "shopapi/internal/datastruct"
+	"strings"
 )
 
-//go:generate mockgen -source=service.go -destination=service_mock.go -package=service ILogger,IClientStorage,IProductStorage,ISupplierStorage,IImageStorage
+//go:generate mockgen -source=service.go -destination=service_mock.go -package=service ILogger,ICache,IClientStorage,IProductStorage,ISupplierStorage,IImageStorage
 
 type ILogger interface {
 	InfoKV(message string, argsKV ...any)
@@ -17,6 +18,11 @@ type ILogger interface {
 	Warnf(message string, args ...any)
 	Errorf(message string, args ...any)
 	Fatalf(message string, args ...any)
+}
+
+type ICache interface {
+	Read(key string, v any) (bool, error)
+	Write(key string, v any) error
 }
 
 type IClientStorage interface {
@@ -54,13 +60,14 @@ type IImageStorage interface {
 type Service struct {
 	ctx             context.Context
 	logger          ILogger
+	cache           ICache
 	clientStorage   IClientStorage
 	productStorage  IProductStorage
 	supplierStorage ISupplierStorage
 	imageStorage    IImageStorage
 }
 
-func NewService(ctx context.Context, l ILogger,
+func NewService(ctx context.Context, l ILogger, c ICache,
 	cs IClientStorage,
 	ps IProductStorage,
 	ss ISupplierStorage,
@@ -68,6 +75,7 @@ func NewService(ctx context.Context, l ILogger,
 	return &Service{
 		ctx:             ctx,
 		logger:          l,
+		cache:           c,
 		clientStorage:   cs,
 		productStorage:  ps,
 		supplierStorage: ss,
@@ -79,4 +87,21 @@ func (s *Service) logHandlerStatus(handlerName, status string) {
 	if status != "" {
 		s.logger.InfoKV(fmt.Sprintf("%s status", handlerName), "status", status)
 	}
+}
+
+func makeCacheKey(vv ...string) string {
+	length := 0
+	for i := range vv {
+		length += len(vv[i])
+	}
+
+	var b strings.Builder
+	b.Grow(length)
+
+	for i := range vv {
+		b.WriteString(vv[i])
+		b.WriteByte('_')
+	}
+
+	return b.String()
 }

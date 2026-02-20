@@ -105,7 +105,7 @@ clean-local-database:
 run-local: $(SHOPAPI_BIN)
 	$(SHOPAPI_BIN)
 
-service-run:
+run-local-fast:
 	go run $(SHOPAPI_DIR)/main.go
 
 $(SHOPAPI_BIN):
@@ -131,6 +131,4 @@ coverage-html: $(COVERAGE_FILE)
 	go tool cover "-html=coverage.out"
 
 clean:
-	$(RM) $(MIGRATOR_BIN) $(RM_POSTFIX)
-	$(RM) $(SHOPAPI_BIN) $(RM_POSTFIX)
-	$(RM) $(COVERAGE_FILE) $(RM_POSTFIX)
+	$(RM) $(MIGRATOR_BIN) $(SHOPAPI_BIN) $(COVERAGE_FILE) $(RM_POSTFIX)

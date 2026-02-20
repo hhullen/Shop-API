@@ -119,19 +119,114 @@ func TestGetClientsByName(t *testing.T) {
 
 		res := &ds.GetClientsByNameResponse{}
 
+		notCached := false
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(notCached, nil)
 		s.clientStorageMock.EXPECT().GetClientsByName(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 
 		resp := s.srv.GetClientsByName(req)
 		require.NotNil(t, resp)
+		require.False(t, resp.Cached)
 	})
 
-	t.Run("GetClientsByName error", func(t *testing.T) {
+	t.Run("GetClientsByName cached ok", func(t *testing.T) {
 		t.Parallel()
 
 		s := NewTestService(t)
 
 		req := &ds.GetClientsByNameRequest{}
 
+		res := &ds.GetClientsByNameResponse{}
+
+		name := "Name"
+		surname := "Surname"
+		cached := true
+		getCached := func(key string, v any) (bool, error) {
+			vv := v.(*ds.GetClientsByNameResponse)
+			vv.Clients = append(vv.Clients, ds.Client{
+				Name:    name,
+				Surname: surname,
+			})
+			return cached, nil
+		}
+
+		s.cacheMock.EXPECT().Read(gomock.Any(), res).DoAndReturn(getCached)
+
+		resp := s.srv.GetClientsByName(req)
+		require.NotNil(t, resp)
+		require.True(t, resp.Cached)
+		require.Equal(t, resp.Clients[0].Name, name)
+		require.Equal(t, resp.Clients[0].Surname, surname)
+	})
+
+	t.Run("GetClientsByName avoid cache ok", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetClientsByNameRequest{
+			AvoidCache: true,
+		}
+
+		res := &ds.GetClientsByNameResponse{}
+
+		s.clientStorageMock.EXPECT().GetClientsByName(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
+
+		resp := s.srv.GetClientsByName(req)
+		require.NotNil(t, resp)
+		require.False(t, resp.Cached)
+	})
+
+	t.Run("GetClientsByName error on Read", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetClientsByNameRequest{}
+
+		res := &ds.GetClientsByNameResponse{}
+
+		notCached := false
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, errTest)
+		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
+		s.clientStorageMock.EXPECT().GetClientsByName(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
+
+		resp := s.srv.GetClientsByName(req)
+		require.NotNil(t, resp)
+		require.False(t, resp.Cached, notCached)
+	})
+
+	t.Run("GetClientsByName error on Write", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetClientsByNameRequest{}
+
+		res := &ds.GetClientsByNameResponse{}
+
+		notCached := false
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(notCached, nil)
+		s.clientStorageMock.EXPECT().GetClientsByName(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(errTest)
+		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
+
+		resp := s.srv.GetClientsByName(req)
+		require.NotNil(t, resp)
+		require.False(t, resp.Cached, notCached)
+	})
+
+	t.Run("GetClientsByName error on GetClientsByName", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetClientsByNameRequest{}
+
+		notCached := false
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(notCached, nil)
 		s.clientStorageMock.EXPECT().GetClientsByName(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
 

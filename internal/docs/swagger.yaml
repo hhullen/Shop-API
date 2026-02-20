@@ -242,6 +242,9 @@ definitions:
     - Female
   datastruct.GetClientsByNameResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       clients:
         items:
           $ref: '#/definitions/datastruct.Client'
@@ -256,6 +259,9 @@ definitions:
     type: object
   datastruct.GetImageResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       image:
         items:
           type: integer
@@ -268,6 +274,9 @@ definitions:
     type: object
   datastruct.GetProductImageResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       image:
         items:
           type: integer
@@ -280,6 +289,9 @@ definitions:
     type: object
   datastruct.GetProductResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       product:
         $ref: '#/definitions/datastruct.Product'
       status:
@@ -295,6 +307,9 @@ definitions:
     type: object
   datastruct.GetSupplierResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       status:
         example: status message
         type: string
@@ -561,6 +576,11 @@ paths:
         in: query
         name: client_surname
         type: string
+      - description: avoid_cache
+        example: "true"
+        in: query
+        name: avoid_cache
+        type: string
       produces:
       - application/json
       responses:
@@ -617,6 +637,11 @@ paths:
         in: query
         name: uid
         required: true
+        type: string
+      - description: avoid_cache
+        example: "true"
+        in: query
+        name: avoid_cache
         type: string
       produces:
       - application/octet-stream
@@ -713,6 +738,11 @@ paths:
         name: product_uid
         required: true
         type: string
+      - description: avoid_cache
+        example: "true"
+        in: query
+        name: avoid_cache
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -769,6 +799,11 @@ paths:
         in: query
         name: uid
         required: true
+        type: string
+      - description: avoid_cache
+        example: "true"
+        in: query
+        name: avoid_cache
         type: string
       produces:
       - application/json
@@ -920,6 +955,11 @@ paths:
         in: query
         name: uid
         required: true
+        type: string
+      - description: avoid_cache
+        example: "true"
+        in: query
+        name: avoid_cache
         type: string
       produces:
       - application/json

@@ -2,9 +2,11 @@ package service
 
 import (
 	ds "shopapi/internal/datastruct"
+	"shopapi/internal/supports"
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -127,19 +129,117 @@ func TestGetProductImage(t *testing.T) {
 			Status: ds.Status{Message: "status"},
 		}
 
+		notCached := false
+
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(notCached, nil)
 		s.imageStorageMock.EXPECT().GetProductImage(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
 
 		resp := s.srv.GetProductImage(req)
 		require.NotNil(t, resp)
+		require.False(t, resp.Cached)
 	})
 
-	t.Run("GetProductImage error", func(t *testing.T) {
+	t.Run("GetProductImage avoid cache ok", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetProductImageRequest{
+			AvoidCache: true,
+		}
+
+		res := &ds.GetProductImageResponse{
+			Status: ds.Status{Message: "status"},
+		}
+
+		s.imageStorageMock.EXPECT().GetProductImage(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
+		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
+
+		resp := s.srv.GetProductImage(req)
+		require.NotNil(t, resp)
+		require.False(t, resp.Cached)
+	})
+
+	t.Run("GetProductImage cached ok", func(t *testing.T) {
 		t.Parallel()
 
 		s := NewTestService(t)
 
 		req := &ds.GetProductImageRequest{}
+
+		uid := uuid.New()
+		cached := true
+		getCached := func(key string, v any) (bool, error) {
+			vv := v.(*ds.GetProductImageResponse)
+			vv.Image = supports.TestImage
+			vv.Uid = &uid
+			vv.Status = ds.Status{Message: "status"}
+			return cached, nil
+		}
+
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).DoAndReturn(getCached)
+		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
+
+		resp := s.srv.GetProductImage(req)
+		require.NotNil(t, resp)
+		require.True(t, resp.Cached)
+		require.Equal(t, resp.Uid, &uid)
+		require.Equal(t, resp.Image, supports.TestImage)
+	})
+
+	t.Run("GetProductImage error on Read", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetProductImageRequest{}
+
+		res := &ds.GetProductImageResponse{
+			Status: ds.Status{Message: "status"},
+		}
+
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, errTest)
+		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
+		s.imageStorageMock.EXPECT().GetProductImage(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
+		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
+
+		resp := s.srv.GetProductImage(req)
+		require.NotNil(t, resp)
+		require.False(t, resp.Cached)
+	})
+
+	t.Run("GetProductImage error on Write", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetProductImageRequest{}
+
+		res := &ds.GetProductImageResponse{
+			Status: ds.Status{Message: "status"},
+		}
+
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.imageStorageMock.EXPECT().GetProductImage(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(errTest)
+		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
+		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
+
+		resp := s.srv.GetProductImage(req)
+		require.NotNil(t, resp)
+		require.False(t, resp.Cached)
+	})
+
+	t.Run("GetProductImage error on GetProductImage", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetProductImageRequest{AvoidCache: true}
 
 		s.imageStorageMock.EXPECT().GetProductImage(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
@@ -163,19 +263,115 @@ func TestGetImage(t *testing.T) {
 			Status: ds.Status{Message: "status"},
 		}
 
+		notCached := false
+
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(notCached, nil)
 		s.imageStorageMock.EXPECT().GetImage(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
 
 		resp := s.srv.GetImage(req)
 		require.NotNil(t, resp)
+		require.False(t, resp.Cached)
 	})
 
-	t.Run("GetImage error", func(t *testing.T) {
+	t.Run("GetImage avoid cache ok", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetImageRequest{AvoidCache: true}
+
+		res := &ds.GetImageResponse{
+			Status: ds.Status{Message: "status"},
+		}
+
+		s.imageStorageMock.EXPECT().GetImage(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
+		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
+
+		resp := s.srv.GetImage(req)
+		require.NotNil(t, resp)
+		require.False(t, resp.Cached)
+	})
+
+	t.Run("GetImage cached ok", func(t *testing.T) {
 		t.Parallel()
 
 		s := NewTestService(t)
 
 		req := &ds.GetImageRequest{}
+
+		uid := uuid.New()
+		cached := true
+		getCached := func(key string, v any) (bool, error) {
+			vv := v.(*ds.GetImageResponse)
+			vv.Image = supports.TestImage
+			vv.Uid = &uid
+			vv.Status = ds.Status{Message: "status"}
+			return cached, nil
+		}
+
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).DoAndReturn(getCached)
+		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
+
+		resp := s.srv.GetImage(req)
+		require.NotNil(t, resp)
+		require.True(t, resp.Cached)
+		require.Equal(t, resp.Uid, &uid)
+		require.Equal(t, resp.Image, supports.TestImage)
+	})
+
+	t.Run("GetImage error on Read", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetImageRequest{}
+
+		res := &ds.GetImageResponse{
+			Status: ds.Status{Message: "status"},
+		}
+
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, errTest)
+		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
+		s.imageStorageMock.EXPECT().GetImage(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
+		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
+
+		resp := s.srv.GetImage(req)
+		require.NotNil(t, resp)
+		require.False(t, resp.Cached)
+	})
+
+	t.Run("GetImage error on Write", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetImageRequest{}
+
+		res := &ds.GetImageResponse{
+			Status: ds.Status{Message: "status"},
+		}
+
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.imageStorageMock.EXPECT().GetImage(gomock.Any()).Return(res, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(errTest)
+		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
+		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
+
+		resp := s.srv.GetImage(req)
+		require.NotNil(t, resp)
+		require.False(t, resp.Cached)
+	})
+
+	t.Run("GetImage error on GetImage", func(t *testing.T) {
+		t.Parallel()
+
+		s := NewTestService(t)
+
+		req := &ds.GetImageRequest{AvoidCache: true}
 
 		s.imageStorageMock.EXPECT().GetImage(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())

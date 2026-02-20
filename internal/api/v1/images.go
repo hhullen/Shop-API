@@ -70,6 +70,7 @@ func (a *API) UpdateImage(w http.ResponseWriter, r *http.Request) {
 // @Tags         Image
 // @Produce      application/octet-stream
 // @Param        product_uid    query  string  true  "product_uid" example("c85a189d-d173-42e2-8e00-54395234d93d")
+// @Param        avoid_cache    query  string  false "avoid_cache" example(true)
 // @Success      200  {file}    binary
 // @Failure      400  {object}  ds.GetProductImageResponse
 // @Failure      500  {object}  ds.Status
@@ -90,7 +91,8 @@ func (a *API) GetProductImage(w http.ResponseWriter, r *http.Request) {
 // @Description  Возвращает изображение
 // @Tags         Image
 // @Produce      application/octet-stream
-// @Param        uid  query     string              true  "uid" example("376de312-5bcb-4320-8ba3-bd2050548229")
+// @Param        uid            query     string true  "uid" example("376de312-5bcb-4320-8ba3-bd2050548229")
+// @Param        avoid_cache    query     string false "avoid_cache" example(true)
 // @Success      200  {file}    binary
 // @Failure      400  {object}  ds.GetImageResponse
 // @Failure      500  {object}  ds.Status

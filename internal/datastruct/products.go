@@ -40,12 +40,14 @@ type DecreaseProductsResponse struct {
 }
 
 type GetProductRequest struct {
-	Uid uuid.UUID `schema:"uid" validate:"required" example:"c85a189d-d173-42e2-8e00-54395234d93d"`
+	Uid        uuid.UUID `schema:"uid" validate:"required" example:"c85a189d-d173-42e2-8e00-54395234d93d"`
+	AvoidCache bool      `schema:"avoid_cache,omitempty" example:"true"`
 }
 
 type GetProductResponse struct {
 	Status
 	Product *Product `json:"product,omitempty"`
+	Cached  bool     `json:"cached,omitempty" example:"false"`
 }
 
 type GetProductsRequest struct {

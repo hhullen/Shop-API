@@ -170,6 +170,72 @@ func (mr *MockILoggerMockRecorder) Warnf(message interface{}, args ...interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Warnf", reflect.TypeOf((*MockILogger)(nil).Warnf), varargs...)
 }
 
+// MockICache is a mock of ICache interface.
+type MockICache struct {
+	ctrl     *gomock.Controller
+	recorder *MockICacheMockRecorder
+}
+
+// MockICacheMockRecorder is the mock recorder for MockICache.
+type MockICacheMockRecorder struct {
+	mock *MockICache
+}
+
+// NewMockICache creates a new mock instance.
+func NewMockICache(ctrl *gomock.Controller) *MockICache {
+	mock := &MockICache{ctrl: ctrl}
+	mock.recorder = &MockICacheMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockICache) EXPECT() *MockICacheMockRecorder {
+	return m.recorder
+}
+
+// Read mocks base method.
+func (m *MockICache) Read(key string, v any) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Read", key, v)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Read indicates an expected call of Read.
+func (mr *MockICacheMockRecorder) Read(key, v interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Read", reflect.TypeOf((*MockICache)(nil).Read), key, v)
+}
+
+// Remove mocks base method.
+func (m *MockICache) Remove(key string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Remove", key)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Remove indicates an expected call of Remove.
+func (mr *MockICacheMockRecorder) Remove(key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Remove", reflect.TypeOf((*MockICache)(nil).Remove), key)
+}
+
+// Write mocks base method.
+func (m *MockICache) Write(key string, v any) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Write", key, v)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Write indicates an expected call of Write.
+func (mr *MockICacheMockRecorder) Write(key, v interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Write", reflect.TypeOf((*MockICache)(nil).Write), key, v)
+}
+
 // MockIClientStorage is a mock of IClientStorage interface.
 type MockIClientStorage struct {
 	ctrl     *gomock.Controller

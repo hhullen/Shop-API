@@ -62,12 +62,14 @@ type DeleteClientResponse struct {
 }
 
 type GetClientsByNameRequest struct {
-	Name    string `schema:"client_name" validate:"required" example:"Vasilisa"`
-	Surname string `schema:"client_surname" validate:"required" example:"Kadyk"`
+	Name       string `schema:"client_name" validate:"required" example:"Vasilisa"`
+	Surname    string `schema:"client_surname" validate:"required" example:"Kadyk"`
+	AvoidCache bool   `schema:"avoid_cache,omitempty" example:"true"`
 }
 
 type GetClientsByNameResponse struct {
 	Clients []Client `json:"clients"`
+	Cached  bool     `json:"cached,omitempty" example:"false"`
 }
 
 type GetClientsRequest struct {

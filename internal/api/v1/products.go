@@ -67,7 +67,8 @@ func (a *API) DecreaseProduct(w http.ResponseWriter, r *http.Request) {
 // @Description  Возвращает продукт.
 // @Tags         Product
 // @Produce      json
-// @Param        uid  query     string                true  "uid" example("c85a189d-d173-42e2-8e00-54395234d93d")
+// @Param        uid            query  string  true  "uid" example("c85a189d-d173-42e2-8e00-54395234d93d")
+// @Param        avoid_cache    query  string  false "avoid_cache" example(true)
 // @Success      200  {object}  ds.GetProductResponse
 // @Failure      400  {object}  ds.GetProductResponse
 // @Failure      500  {object}  ds.Status

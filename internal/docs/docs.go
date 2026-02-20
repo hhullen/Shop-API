@@ -237,6 +237,13 @@ const docTemplate = `{
                         "description": "client_surname",
                         "name": "client_surname",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -279,6 +286,13 @@ const docTemplate = `{
                         "name": "uid",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -464,6 +478,13 @@ const docTemplate = `{
                         "name": "product_uid",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -506,6 +527,13 @@ const docTemplate = `{
                         "name": "uid",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -730,6 +758,13 @@ const docTemplate = `{
                         "name": "uid",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1287,6 +1322,10 @@ const docTemplate = `{
         "datastruct.GetClientsByNameResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "clients": {
                     "type": "array",
                     "items": {
@@ -1309,6 +1348,10 @@ const docTemplate = `{
         "datastruct.GetImageResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "image": {
                     "type": "array",
                     "items": {
@@ -1327,6 +1370,10 @@ const docTemplate = `{
         "datastruct.GetProductImageResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "image": {
                     "type": "array",
                     "items": {
@@ -1345,6 +1392,10 @@ const docTemplate = `{
         "datastruct.GetProductResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "product": {
                     "$ref": "#/definitions/datastruct.Product"
                 },
@@ -1368,6 +1419,10 @@ const docTemplate = `{
         "datastruct.GetSupplierResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"

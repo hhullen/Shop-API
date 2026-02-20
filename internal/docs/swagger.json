@@ -231,6 +231,13 @@
                         "description": "client_surname",
                         "name": "client_surname",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -273,6 +280,13 @@
                         "name": "uid",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -458,6 +472,13 @@
                         "name": "product_uid",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -500,6 +521,13 @@
                         "name": "uid",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -724,6 +752,13 @@
                         "name": "uid",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1281,6 +1316,10 @@
         "datastruct.GetClientsByNameResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "clients": {
                     "type": "array",
                     "items": {
@@ -1303,6 +1342,10 @@
         "datastruct.GetImageResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "image": {
                     "type": "array",
                     "items": {
@@ -1321,6 +1364,10 @@
         "datastruct.GetProductImageResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "image": {
                     "type": "array",
                     "items": {
@@ -1339,6 +1386,10 @@
         "datastruct.GetProductResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "product": {
                     "$ref": "#/definitions/datastruct.Product"
                 },
@@ -1362,6 +1413,10 @@
         "datastruct.GetSupplierResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"

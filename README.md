@@ -7,7 +7,7 @@ GNU Make 3.81, go1.24.2, Docker 28.1.1 (Docker Desktop)
 
 ### Makefile and source code located in `src` directory
 
-### In `secrets/` directory placed default secrets for PosgreSQL. At first you can change it. 
+### In `secrets/` directory placed default secrets. At first you can change it. 
 
 ## How to run local
 1. Prepare local database
@@ -45,7 +45,7 @@ When service is running the OpenAPI page with all implemented endpoints is avail
 - `make stop-local-database` stops local database
 - `make clean-local-database` cleans local database
 - `make run-local` compiles and runs service binary
-- `make service-run` runs service via `go run` command
+- `make run-local-fast` runs service via `go run` command
 - `make service` runs docker compose service
 - `make stop-service` stops docker compose service
 - `make service-rebuild` rebuild docker compose image

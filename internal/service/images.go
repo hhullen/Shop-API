@@ -4,6 +4,10 @@ import (
 	ds "shopapi/internal/datastruct"
 )
 
+const (
+	imagesCacheKey = "images"
+)
+
 func (s *Service) AddImage(req *ds.AddImageRequest) *ds.AddImageResponse {
 	resp, err := s.imageStorage.AddImage(req)
 	if err != nil {
@@ -38,26 +42,70 @@ func (s *Service) DeleteImage(req *ds.DeleteImageRequest) *ds.DeleteImageRespons
 	return resp
 }
 
-func (s *Service) GetProductImage(req *ds.GetProductImageRequest) *ds.GetProductImageResponse {
-	resp, err := s.imageStorage.GetProductImage(req)
-	if err != nil {
-		s.logger.ErrorKV("failed on GetProductImage", "message", err.Error())
-		return nil
+func (s *Service) GetProductImage(req *ds.GetProductImageRequest) (resp *ds.GetProductImageResponse) {
+	var cached bool
+	var err error
+
+	key := makeCacheKey(imagesCacheKey, req.ProductUid.String())
+	if !req.AvoidCache {
+		resp = &ds.GetProductImageResponse{}
+		cached, err = s.cache.Read(key, resp)
+		if err != nil {
+			s.logger.ErrorKV("failed reading cache on GetProductImage", "message", err.Error())
+		}
+	}
+
+	if !cached {
+		resp, err = s.imageStorage.GetProductImage(req)
+		if err != nil {
+			s.logger.ErrorKV("failed on GetProductImage", "message", err.Error())
+			return nil
+		}
+
+		err = s.cache.Write(key, resp)
+		if err != nil {
+			s.logger.ErrorKV("failed writing cache on GetProductImage", "message", err.Error())
+		}
+		resp.Cached = false
+	} else {
+		resp.Cached = true
 	}
 
 	s.logHandlerStatus("GetProductImage", resp.GetStatus())
 
-	return resp
+	return
 }
 
-func (s *Service) GetImage(req *ds.GetImageRequest) *ds.GetImageResponse {
-	resp, err := s.imageStorage.GetImage(req)
-	if err != nil {
-		s.logger.ErrorKV("failed on GetImage", "message", err.Error())
-		return nil
+func (s *Service) GetImage(req *ds.GetImageRequest) (resp *ds.GetImageResponse) {
+	var cached bool
+	var err error
+
+	key := makeCacheKey(imagesCacheKey, req.Uid.String())
+	if !req.AvoidCache {
+		resp = &ds.GetImageResponse{}
+		cached, err = s.cache.Read(key, resp)
+		if err != nil {
+			s.logger.ErrorKV("failed reading cache on GetImage", "message", err.Error())
+		}
+	}
+
+	if !cached {
+		resp, err = s.imageStorage.GetImage(req)
+		if err != nil {
+			s.logger.ErrorKV("failed on GetImage", "message", err.Error())
+			return nil
+		}
+
+		err = s.cache.Write(key, resp)
+		if err != nil {
+			s.logger.ErrorKV("failed writing cache on GetImage", "message", err.Error())
+		}
+		resp.Cached = false
+	} else {
+		resp.Cached = true
 	}
 
 	s.logHandlerStatus("GetImage", resp.GetStatus())
 
-	return resp
+	return
 }
