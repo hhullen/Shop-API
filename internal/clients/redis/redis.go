@@ -11,6 +11,8 @@ import (
 	go_redis "github.com/redis/go-redis/v9"
 )
 
+//go:generate mockgen -destination=redis_mock.go -package=redis github.com/redis/go-redis/v9 UniversalClient
+
 const (
 	requestTimeout    = time.Millisecond * 200
 	defaultExpiration = time.Minute * 10
