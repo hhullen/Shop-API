@@ -5,6 +5,10 @@ Here is a REST API service written with Golang net/http
 ## Requirements
 GNU Make 3.81, go1.24.2, Docker 28.1.1 (Docker Desktop)
 
+### Makefile and source code located in `src` directory
+
+### In `secrets/` directory placed default secrets for PosgreSQL. At first you can change it. 
+
 ## How to run local
 1. Prepare local database
 ```shell
@@ -45,4 +49,6 @@ When service is running the OpenAPI page with all implemented endpoints is avail
 - `make service` runs docker compose service
 - `make stop-service` stops docker compose service
 - `make service-rebuild` rebuild docker compose image
+- `make coverage-info` shows unit testing coverage in terminal
+- `make coverage-html` shows unit testing coverage in browser
 - `make clean` removes compiled binaries

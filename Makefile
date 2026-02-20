@@ -14,6 +14,7 @@ SHADOW_BIN=$(shell where shadow)
 ERRCHECK_INSTALL=go install github.com/kisielk/errcheck@latest
 ERRCHECK_BIN=$(shell where errcheck)
 
+COVERAGE_FILE=coverage.out
 
 SERVICE_DATASTRUCT_DIR=internal/datastruct
 API_DIR=internal/api/v1
@@ -45,7 +46,7 @@ ifeq ($(OS),Windows_NT)
 	ERRCHECK_BIN=$(strip $(shell (Get-Command errcheck.exe -ErrorAction SilentlyContinue).Source))
 endif
 
-.PHONY: deps generate-sqlc generate-mocks generage-swag migrations-up migrations-down migrations-status start-local-database stop-local-database clean-local-database service
+.PHONY: deps generate-sqlc generate-mocks generage-swag migrations-up migrations-down migrations-status start-local-database stop-local-database clean-local-database service coverage-info coverage-html
 
 deps:
 	go mod download
@@ -120,6 +121,16 @@ service-rebuild:
 	docker compose down -v
 	docker compose up --build --renew-anon-volumes --force-recreate
 
+$(COVERAGE_FILE):
+	go test "-coverpkg=./..." "-coverprofile=coverage.out" ./...
+
+coverage-info: $(COVERAGE_FILE)
+	go tool cover "-func=coverage.out"
+
+coverage-html: $(COVERAGE_FILE)
+	go tool cover "-html=coverage.out"
+
 clean:
 	$(RM) $(MIGRATOR_BIN) $(RM_POSTFIX)
 	$(RM) $(SHOPAPI_BIN) $(RM_POSTFIX)
+	$(RM) $(COVERAGE_FILE) $(RM_POSTFIX)
