@@ -2,14 +2,15 @@ package service
 
 import (
 	ds "shopapi/internal/datastruct"
-)
-
-const (
-	imagesCacheKey = "images"
+	"shopapi/internal/supports"
 )
 
 func (s *Service) AddImage(req *ds.AddImageRequest) *ds.AddImageResponse {
-	resp, err := s.imageStorage.AddImage(req)
+	key := makeCacheKey("AddImage", req.Uid.String(), supports.GetHash(req.Image))
+
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.AddImageResponse, error) {
+		return s.imageStorage.AddImage(req)
+	})
 	if err != nil {
 		s.logger.ErrorKV("failed on AddImage", "message", err.Error())
 		return nil
@@ -19,7 +20,12 @@ func (s *Service) AddImage(req *ds.AddImageRequest) *ds.AddImageResponse {
 }
 
 func (s *Service) UpdateImage(req *ds.UpdateImageRequest) *ds.UpdateImageResponse {
-	resp, err := s.imageStorage.UpdateImage(req)
+	key := makeCacheKey("UpdateImage", req.Uid.String(), supports.GetHash(req.Image))
+
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.UpdateImageResponse, error) {
+		return s.imageStorage.UpdateImage(req)
+	})
+
 	if err != nil {
 		s.logger.ErrorKV("failed on UpdateImage", "message", err.Error())
 		return nil
@@ -31,7 +37,12 @@ func (s *Service) UpdateImage(req *ds.UpdateImageRequest) *ds.UpdateImageRespons
 }
 
 func (s *Service) DeleteImage(req *ds.DeleteImageRequest) *ds.DeleteImageResponse {
-	resp, err := s.imageStorage.DeleteImage(req)
+	key := makeCacheKey("DeleteImage", req.Uid.String())
+
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.DeleteImageResponse, error) {
+		return s.imageStorage.DeleteImage(req)
+	})
+
 	if err != nil {
 		s.logger.ErrorKV("failed on DeleteImage", "message", err.Error())
 		return nil
@@ -43,32 +54,15 @@ func (s *Service) DeleteImage(req *ds.DeleteImageRequest) *ds.DeleteImageRespons
 }
 
 func (s *Service) GetProductImage(req *ds.GetProductImageRequest) (resp *ds.GetProductImageResponse) {
-	var cached bool
-	var err error
+	key := makeCacheKey("GetProductImage", req.ProductUid.String())
 
-	key := makeCacheKey(imagesCacheKey, req.ProductUid.String())
-	if !req.AvoidCache {
-		resp = &ds.GetProductImageResponse{}
-		cached, err = s.cache.Read(key, resp)
-		if err != nil {
-			s.logger.ErrorKV("failed reading cache on GetProductImage", "message", err.Error())
-		}
-	}
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.GetProductImageResponse, error) {
+		return s.imageStorage.GetProductImage(req)
+	})
 
-	if !cached {
-		resp, err = s.imageStorage.GetProductImage(req)
-		if err != nil {
-			s.logger.ErrorKV("failed on GetProductImage", "message", err.Error())
-			return nil
-		}
-
-		err = s.cache.Write(key, resp)
-		if err != nil {
-			s.logger.ErrorKV("failed writing cache on GetProductImage", "message", err.Error())
-		}
-		resp.Cached = false
-	} else {
-		resp.Cached = true
+	if err != nil {
+		s.logger.ErrorKV("failed on GetProductImage", "message", err.Error())
+		return nil
 	}
 
 	s.logHandlerStatus("GetProductImage", resp.GetStatus())
@@ -77,32 +71,15 @@ func (s *Service) GetProductImage(req *ds.GetProductImageRequest) (resp *ds.GetP
 }
 
 func (s *Service) GetImage(req *ds.GetImageRequest) (resp *ds.GetImageResponse) {
-	var cached bool
-	var err error
+	key := makeCacheKey("GetImage", req.Uid.String())
 
-	key := makeCacheKey(imagesCacheKey, req.Uid.String())
-	if !req.AvoidCache {
-		resp = &ds.GetImageResponse{}
-		cached, err = s.cache.Read(key, resp)
-		if err != nil {
-			s.logger.ErrorKV("failed reading cache on GetImage", "message", err.Error())
-		}
-	}
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.GetImageResponse, error) {
+		return s.imageStorage.GetImage(req)
+	})
 
-	if !cached {
-		resp, err = s.imageStorage.GetImage(req)
-		if err != nil {
-			s.logger.ErrorKV("failed on GetImage", "message", err.Error())
-			return nil
-		}
-
-		err = s.cache.Write(key, resp)
-		if err != nil {
-			s.logger.ErrorKV("failed writing cache on GetImage", "message", err.Error())
-		}
-		resp.Cached = false
-	} else {
-		resp.Cached = true
+	if err != nil {
+		s.logger.ErrorKV("failed on GetImage", "message", err.Error())
+		return nil
 	}
 
 	s.logHandlerStatus("GetImage", resp.GetStatus())

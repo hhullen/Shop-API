@@ -1,15 +1,23 @@
 package service
 
 import (
+	"encoding/json"
 	ds "shopapi/internal/datastruct"
-)
-
-const (
-	clientsCacheKey = "clients"
+	"shopapi/internal/supports"
+	"strconv"
 )
 
 func (s *Service) AddClient(req *ds.AddClientRequest) *ds.AddClientResponse {
-	resp, err := s.clientStorage.AddClient(req)
+	reqKey, err := json.Marshal(req.Client)
+	if err != nil {
+		s.logger.ErrorKV("failed making cache key", "message", err.Error(), "data", *req)
+		req.AvoidCacheFlag.Flag = true
+	}
+	key := makeCacheKey("AddClient", supports.GetHash(reqKey))
+
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.AddClientResponse, error) {
+		return s.clientStorage.AddClient(req)
+	})
 	if err != nil {
 		s.logger.ErrorKV("failed on AddClient", "message", err.Error())
 		return nil
@@ -19,7 +27,11 @@ func (s *Service) AddClient(req *ds.AddClientRequest) *ds.AddClientResponse {
 }
 
 func (s *Service) DeleteClient(req *ds.DeleteClientRequest) *ds.DeleteClientResponse {
-	resp, err := s.clientStorage.DeleteClient(req)
+	key := makeCacheKey("DeleteClient", req.Uid.String())
+
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.DeleteClientResponse, error) {
+		return s.clientStorage.DeleteClient(req)
+	})
 	if err != nil {
 		s.logger.ErrorKV("failed on DeleteClient", "message", err.Error())
 		return nil
@@ -31,7 +43,11 @@ func (s *Service) DeleteClient(req *ds.DeleteClientRequest) *ds.DeleteClientResp
 }
 
 func (s *Service) GetClients(req *ds.GetClientsRequest) *ds.GetClientsResponse {
-	resp, err := s.clientStorage.GetClients(req)
+	key := makeCacheKey("GetClients", strconv.FormatInt(req.Limit, 10), strconv.FormatInt(req.Offset, 10))
+
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.GetClientsResponse, error) {
+		return s.clientStorage.GetClients(req)
+	})
 	if err != nil {
 		s.logger.ErrorKV("failed on GetClients", "message", err.Error())
 		return nil
@@ -40,40 +56,31 @@ func (s *Service) GetClients(req *ds.GetClientsRequest) *ds.GetClientsResponse {
 	return resp
 }
 
-func (s *Service) GetClientsByName(req *ds.GetClientsByNameRequest) (resp *ds.GetClientsByNameResponse) {
-	var cached bool
-	var err error
+func (s *Service) GetClientsByName(req *ds.GetClientsByNameRequest) *ds.GetClientsByNameResponse {
+	key := makeCacheKey("GetClientsByName", req.Name, req.Surname)
 
-	key := makeCacheKey(clientsCacheKey, req.Name, req.Surname)
-	if !req.AvoidCache {
-		resp = &ds.GetClientsByNameResponse{}
-		cached, err = s.cache.Read(key, resp)
-		if err != nil {
-			s.logger.ErrorKV("failed reading cache on GetClientsByName", "message", err.Error())
-		}
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.GetClientsByNameResponse, error) {
+		return s.clientStorage.GetClientsByName(req)
+	})
+	if err != nil {
+		s.logger.ErrorKV("failed on GetClientsByName", "message", err.Error())
+		return nil
 	}
 
-	if !cached {
-		resp, err = s.clientStorage.GetClientsByName(req)
-		if err != nil {
-			s.logger.ErrorKV("failed on GetClientsByName", "message", err.Error())
-			return nil
-		}
-
-		err = s.cache.Write(key, resp)
-		if err != nil {
-			s.logger.ErrorKV("failed writing cache on GetClientsByName", "message", err.Error())
-		}
-		resp.Cached = false
-	} else {
-		resp.Cached = true
-	}
-
-	return
+	return resp
 }
 
 func (s *Service) PatchClientAddress(req *ds.PatchClientAddressRequest) *ds.PatchClientAddressResponse {
-	resp, err := s.clientStorage.PatchClientAddress(req)
+	reqKey, err := json.Marshal(req.Address)
+	if err != nil {
+		s.logger.ErrorKV("failed making cache key", "message", err.Error(), "data", *req)
+		req.AvoidCacheFlag.Flag = true
+	}
+	key := makeCacheKey("PatchClientAddress", req.Uid.String(), supports.GetHash(reqKey))
+
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.PatchClientAddressResponse, error) {
+		return s.clientStorage.PatchClientAddress(req)
+	})
 	if err != nil {
 		s.logger.ErrorKV("failed on PatchClientAddress", "message", err.Error())
 		return nil

@@ -208,20 +208,6 @@ func (mr *MockICacheMockRecorder) Read(key, v interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Read", reflect.TypeOf((*MockICache)(nil).Read), key, v)
 }
 
-// Remove mocks base method.
-func (m *MockICache) Remove(key string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Remove", key)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Remove indicates an expected call of Remove.
-func (mr *MockICacheMockRecorder) Remove(key interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Remove", reflect.TypeOf((*MockICache)(nil).Remove), key)
-}
-
 // Write mocks base method.
 func (m *MockICache) Write(key string, v any) error {
 	m.ctrl.T.Helper()
@@ -234,6 +220,41 @@ func (m *MockICache) Write(key string, v any) error {
 func (mr *MockICacheMockRecorder) Write(key, v interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Write", reflect.TypeOf((*MockICache)(nil).Write), key, v)
+}
+
+// MockICachedState is a mock of ICachedState interface.
+type MockICachedState struct {
+	ctrl     *gomock.Controller
+	recorder *MockICachedStateMockRecorder
+}
+
+// MockICachedStateMockRecorder is the mock recorder for MockICachedState.
+type MockICachedStateMockRecorder struct {
+	mock *MockICachedState
+}
+
+// NewMockICachedState creates a new mock instance.
+func NewMockICachedState(ctrl *gomock.Controller) *MockICachedState {
+	mock := &MockICachedState{ctrl: ctrl}
+	mock.recorder = &MockICachedStateMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockICachedState) EXPECT() *MockICachedStateMockRecorder {
+	return m.recorder
+}
+
+// SetCached mocks base method.
+func (m *MockICachedState) SetCached(arg0 bool) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetCached", arg0)
+}
+
+// SetCached indicates an expected call of SetCached.
+func (mr *MockICachedStateMockRecorder) SetCached(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetCached", reflect.TypeOf((*MockICachedState)(nil).SetCached), arg0)
 }
 
 // MockIClientStorage is a mock of IClientStorage interface.

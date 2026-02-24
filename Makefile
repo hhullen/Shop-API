@@ -15,6 +15,8 @@ ERRCHECK_INSTALL=go install github.com/kisielk/errcheck@latest
 ERRCHECK_BIN=$(shell where errcheck)
 
 COVERAGE_FILE=coverage.out
+NOT_FILTERED_SUFF=_not_filtered
+FILTER_COVERAGE_FROM_MOCK=grep -v "mock" $(COVERAGE_FILE)$(NOT_FILTERED_SUFF) | grep -v "sqlc" > $(COVERAGE_FILE)
 
 SERVICE_DATASTRUCT_DIR=internal/datastruct
 API_DIR=internal/api/v1
@@ -44,6 +46,7 @@ ifeq ($(OS),Windows_NT)
 	SWAG_BIN=$(strip $(shell (Get-Command swag.exe -ErrorAction SilentlyContinue).Source))
 	SHADOW_BIN=$(strip $(shell (Get-Command shadow.exe -ErrorAction SilentlyContinue).Source))
 	ERRCHECK_BIN=$(strip $(shell (Get-Command errcheck.exe -ErrorAction SilentlyContinue).Source))
+	FILTER_COVERAGE_FROM_MOCK=(Get-Content $(COVERAGE_FILE)$(NOT_FILTERED_SUFF)) | Where-Object { $$_ -notmatch "mock" } | Where-Object { $$_ -notmatch "sqlc" } | Set-Content $(COVERAGE_FILE)
 endif
 
 .PHONY: deps generate-sqlc generate-mocks generage-swag migrations-up migrations-down migrations-status start-local-database stop-local-database clean-local-database service coverage-info coverage-html
@@ -114,7 +117,7 @@ $(SHOPAPI_BIN):
 service:
 	docker compose up
 
-stop-service:
+service-stop:
 	docker compose down
 
 service-rebuild:
@@ -122,7 +125,8 @@ service-rebuild:
 	docker compose up --build --renew-anon-volumes --force-recreate
 
 $(COVERAGE_FILE):
-	go test "-coverpkg=./..." "-coverprofile=coverage.out" ./...
+	go test "-coverpkg=./..." "-coverprofile=$(COVERAGE_FILE)$(NOT_FILTERED_SUFF)" ./...
+	$(FILTER_COVERAGE_FROM_MOCK)
 
 coverage-info: $(COVERAGE_FILE)
 	go tool cover "-func=coverage.out"
@@ -131,4 +135,4 @@ coverage-html: $(COVERAGE_FILE)
 	go tool cover "-html=coverage.out"
 
 clean:
-	$(RM) $(MIGRATOR_BIN) $(SHOPAPI_BIN) $(COVERAGE_FILE) $(RM_POSTFIX)
+	$(RM) $(MIGRATOR_BIN) $(SHOPAPI_BIN) $(COVERAGE_FILE) $(COVERAGE_FILE)$(NOT_FILTERED_SUFF) $(RM_POSTFIX)

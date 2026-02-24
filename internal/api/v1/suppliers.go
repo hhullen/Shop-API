@@ -90,7 +90,7 @@ func (a *API) DeleteSupplier(w http.ResponseWriter, r *http.Request) {
 // @Description  Возвращает поставщика
 // @Tags         Supplier
 // @Produce      json
-// @Param        uid            query  string  true  "uid" example("609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4")
+// @Param        uid            query  string  true  "uid"         example("609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4")
 // @Param        avoid_cache    query  string  false "avoid_cache" example(true)
 // @Success      200  {object}  ds.GetSupplierResponse
 // @Failure      400  {object}  ds.GetSupplierResponse
@@ -112,8 +112,9 @@ func (a *API) GetSupplier(w http.ResponseWriter, r *http.Request) {
 // @Description  Возвращает поставщиков
 // @Tags         Supplier
 // @Produce      json
-// @Param        offset query     string                  true  "offset" example(0)
-// @Param        limit  query     string                  true  "limit" example(10)
+// @Param        offset      query  string true  "offset"      example(0)
+// @Param        limit       query  string true  "limit"       example(10)
+// @Param        avoid_cache query  string false "avoid_cache" example(true)
 // @Success      200    {object}  ds.GetSuppliersResponse
 // @Failure      400    {object}  ds.GetSuppliersResponse
 // @Failure      500    {object}  ds.GetSuppliersResponse

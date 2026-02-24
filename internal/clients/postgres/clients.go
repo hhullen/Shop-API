@@ -11,10 +11,10 @@ import (
 	"shopapi/internal/supports"
 )
 
-func (c *Client) AddClient(req *ds.AddClientRequest) (*ds.AddClientResponse, error) {
+func (c *Client) AddClient(req *ds.AddClientRequest) (resp *ds.AddClientResponse, err error) {
 	uid := supports.GetUUIDIfEmpty(req.Uid)
 
-	err := c.db.ExecTx(defaultTxOpt, func(ctx context.Context, q IQuerier) error {
+	err = c.db.ExecTx(defaultTxOpt, func(ctx context.Context, q IQuerier) error {
 
 		addresId, err := q.InsertAddress(ctx, sqlc.InsertAddressParams{
 			Country: req.Address.Country,
@@ -35,17 +35,20 @@ func (c *Client) AddClient(req *ds.AddClientRequest) (*ds.AddClientResponse, err
 			AddressID:        addresId,
 		})
 		if err != nil {
-			return err
+			if !errors.Is(err, sql.ErrNoRows) {
+				return err
+			}
+			resp = &ds.AddClientResponse{
+				Status: ds.Status{Message: ds.StatusAlreadyExists},
+			}
+			return nil
 		}
 
+		resp = &ds.AddClientResponse{Uid: &uid}
 		return nil
 	})
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &ds.AddClientResponse{Uid: &uid}, nil
+	return
 }
 
 func (c *Client) DeleteClient(req *ds.DeleteClientRequest) (resp *ds.DeleteClientResponse, err error) {

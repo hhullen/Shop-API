@@ -22,10 +22,12 @@ type Product struct {
 
 type AddProductRequest struct {
 	Product
+	AvoidCacheFlag
 }
 
 type AddProductResponse struct {
 	Status
+	CachedStatus
 	Uid *uuid.UUID `json:"uid,omitempty"`
 }
 
@@ -40,29 +42,33 @@ type DecreaseProductsResponse struct {
 }
 
 type GetProductRequest struct {
-	Uid        uuid.UUID `schema:"uid" validate:"required" example:"c85a189d-d173-42e2-8e00-54395234d93d"`
-	AvoidCache bool      `schema:"avoid_cache,omitempty" example:"true"`
+	AvoidCacheFlag
+	Uid uuid.UUID `schema:"uid" validate:"required" example:"c85a189d-d173-42e2-8e00-54395234d93d"`
 }
 
 type GetProductResponse struct {
 	Status
+	CachedStatus
 	Product *Product `json:"product,omitempty"`
-	Cached  bool     `json:"cached,omitempty" example:"false"`
 }
 
 type GetProductsRequest struct {
+	AvoidCacheFlag
 	Limit  int64 `schema:"limit" example:"10"`
 	Offset int64 `schema:"offset" example:"0"`
 }
 
 type GetProductsResponse struct {
+	CachedStatus
 	Products []Product `json:"products"`
 }
 
 type DeleteProductRequest struct {
+	AvoidCacheFlag
 	Uid uuid.UUID `json:"uid" validate:"required" example:"c85a189d-d173-42e2-8e00-54395234d93d"`
 }
 
 type DeleteProductResponse struct {
 	Status
+	CachedStatus
 }

@@ -2,6 +2,7 @@ package datastruct
 
 import (
 	"fmt"
+	"shopapi/internal/supports"
 	"strings"
 	"time"
 )
@@ -12,6 +13,22 @@ type Status struct {
 
 func (s Status) GetStatus() string {
 	return s.Message
+}
+
+type CachedStatus struct {
+	Cached bool `json:"cached" schema:"cached" example:"false"`
+}
+
+func (r *CachedStatus) SetCached(is bool) {
+	r.Cached = is
+}
+
+type AvoidCacheFlag struct {
+	Flag bool `schema:"avoid_cache" json:"avoid_cache" example:"true"`
+}
+
+func (a *AvoidCacheFlag) AvoidCache() bool {
+	return a.Flag
 }
 
 const (
@@ -63,5 +80,5 @@ func (d *DateOnly) UnmarshalJSON(b []byte) error {
 }
 
 func (d *DateOnly) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("\"%s\"", time.Time(*d).Format(time.DateOnly))), nil
+	return []byte(supports.Concat("\"", time.Time(*d).Format(time.DateOnly), "\"")), nil
 }

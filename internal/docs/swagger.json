@@ -180,6 +180,13 @@
                         "name": "limit",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -336,6 +343,13 @@
                         "name": "image",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -430,6 +444,13 @@
                         "name": "image",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -710,6 +731,13 @@
                         "name": "limit",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -943,6 +971,13 @@
                         "name": "limit",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -983,6 +1018,10 @@
                 "address": {
                     "$ref": "#/definitions/datastruct.Address"
                 },
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "birthday": {
                     "type": "string",
                     "example": "10.12.2011"
@@ -1016,6 +1055,14 @@
         "datastruct.AddClientResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                },
                 "uid": {
                     "type": "string"
                 }
@@ -1024,6 +1071,10 @@
         "datastruct.AddImageResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1047,6 +1098,10 @@
                 "available_stock": {
                     "type": "integer",
                     "example": 1023
+                },
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
                 },
                 "category": {
                     "type": "string",
@@ -1081,6 +1136,10 @@
         "datastruct.AddProductResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1101,6 +1160,10 @@
                 "address": {
                     "$ref": "#/definitions/datastruct.Address"
                 },
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "name": {
                     "type": "string",
                     "example": "Vasilisa\u0026Drozzhi .ltd"
@@ -1118,6 +1181,14 @@
         "datastruct.AddSupplierResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                },
                 "uid": {
                     "type": "string"
                 }
@@ -1224,6 +1295,10 @@
                 "uid"
             ],
             "properties": {
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "uid": {
                     "type": "string",
                     "example": "4988150e-1c82-490f-8c07-ee74ace2dd14"
@@ -1233,6 +1308,10 @@
         "datastruct.DeleteClientResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1245,6 +1324,10 @@
                 "uid"
             ],
             "properties": {
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "uid": {
                     "type": "string",
                     "example": "376de312-5bcb-4320-8ba3-bd2050548229"
@@ -1254,6 +1337,10 @@
         "datastruct.DeleteImageResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1266,6 +1353,10 @@
                 "uid"
             ],
             "properties": {
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "uid": {
                     "type": "string",
                     "example": "c85a189d-d173-42e2-8e00-54395234d93d"
@@ -1275,6 +1366,10 @@
         "datastruct.DeleteProductResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1287,6 +1382,10 @@
                 "uid"
             ],
             "properties": {
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "uid": {
                     "type": "string",
                     "example": "609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"
@@ -1296,6 +1395,10 @@
         "datastruct.DeleteSupplierResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1331,6 +1434,10 @@
         "datastruct.GetClientsResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "clients": {
                     "type": "array",
                     "items": {
@@ -1402,6 +1509,10 @@
         "datastruct.GetProductsResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "products": {
                     "type": "array",
                     "items": {
@@ -1429,6 +1540,10 @@
         "datastruct.GetSuppliersResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "suppliers": {
                     "type": "array",
                     "items": {
@@ -1447,6 +1562,10 @@
                 "address": {
                     "$ref": "#/definitions/datastruct.Address"
                 },
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "uid": {
                     "type": "string",
                     "example": "4988150e-1c82-490f-8c07-ee74ace2dd14"
@@ -1456,6 +1575,10 @@
         "datastruct.PatchClientAddressResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1544,6 +1667,10 @@
         "datastruct.UpdateImageResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1560,6 +1687,10 @@
                 "address": {
                     "$ref": "#/definitions/datastruct.Address"
                 },
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "uid": {
                     "type": "string",
                     "example": "609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"
@@ -1569,6 +1700,10 @@
         "datastruct.UpdateSupplierAddressResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"

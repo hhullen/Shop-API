@@ -201,7 +201,7 @@ func middlewareHandler(next http.Handler) http.Handler {
 }
 
 func pattern(method, prefixPath string) string {
-	return fmt.Sprintf("%s %s", method, prefixPath)
+	return supports.Concat(method, " ", prefixPath)
 }
 
 func extractJsonBody(r *http.Request, v any) error {
@@ -360,9 +360,9 @@ func getAttachmentFileName(resp any, outData []byte, expectFileType string) (str
 	if err != nil {
 		return "", err
 	}
-
-	return fmt.Sprintf("attachment; filename=\"file_%s_%s%s\"",
-		fieldName, supports.GetDateAsFileName(time.Now()), ext), nil
+	return supports.Concat("attachment; filename=\"file_", fieldName, "_", supports.GetDateAsFileName(time.Now()), ext, "\""), nil
+	// return fmt.Sprintf("attachment; filename=\"file_%s_%s%s\"",
+	// 	fieldName, supports.GetDateAsFileName(time.Now()), ext), nil
 }
 
 func Exec[ReqT any, RespT any](a ExecArgs[ReqT, RespT]) {
@@ -372,7 +372,7 @@ func Exec[ReqT any, RespT any](a ExecArgs[ReqT, RespT]) {
 		msg := "failed extracting request"
 		a.api.logger.ErrorKV(msg, "error", err.Error())
 
-		resp := ds.Status{Message: fmt.Sprintf("%s: %v", msg, err)}
+		resp := ds.Status{Message: supports.Concat(msg, ": ", err.Error())}
 		err = writeJsonResponse(a.httpResponse, resp)
 		if err != nil {
 			a.api.logger.ErrorKV("failed write response",
@@ -386,7 +386,7 @@ func Exec[ReqT any, RespT any](a ExecArgs[ReqT, RespT]) {
 		msg := "failed validating request"
 		a.api.logger.ErrorKV(msg, "error", err.Error(), "request", req)
 
-		resp := ds.Status{Message: fmt.Sprintf("%s: %v", msg, err)}
+		resp := ds.Status{Message: supports.Concat(msg, ": ", err.Error())}
 		err = writeJsonResponse(a.httpResponse, resp)
 		if err != nil {
 			a.api.logger.ErrorKV("failed write response",

@@ -200,9 +200,8 @@ func (q *Queries) InsertAddress(ctx context.Context, arg InsertAddressParams) (i
 const insertClient = `-- name: InsertClient :one
 INSERT INTO clients (uid, client_name, client_surname, birthday, gender, registration_date, address_id)
 VALUES ($1, $2, $3, $4, $5, $6, $7) 
-ON CONFLICT (client_name, client_surname, birthday, gender, registration_date, address_id)
-DO UPDATE SET 
-    client_name = EXCLUDED.client_name
+ON CONFLICT (uid)
+DO NOTHING
 RETURNING uid
 `
 

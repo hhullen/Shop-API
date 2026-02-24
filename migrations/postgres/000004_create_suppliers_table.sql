@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS suppliers (
     "phone_number" TEXT NOT NULL,
     address_id INT NOT NULL REFERENCES addresses(id) ON DELETE CASCADE,
 
-    UNIQUE("name", address_id)
+    UNIQUE(uid)
 );
 
 -- +goose StatementEnd

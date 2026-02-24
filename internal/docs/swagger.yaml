@@ -4,6 +4,9 @@ definitions:
     properties:
       address:
         $ref: '#/definitions/datastruct.Address'
+      avoid_cache:
+        example: true
+        type: boolean
       birthday:
         example: 10.12.2011
         type: string
@@ -33,11 +36,20 @@ definitions:
     type: object
   datastruct.AddClientResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
+      status:
+        example: status message
+        type: string
       uid:
         type: string
     type: object
   datastruct.AddImageResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       status:
         example: status message
         type: string
@@ -49,6 +61,9 @@ definitions:
       available_stock:
         example: 1023
         type: integer
+      avoid_cache:
+        example: true
+        type: boolean
       category:
         example: construction
         type: string
@@ -80,6 +95,9 @@ definitions:
     type: object
   datastruct.AddProductResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       status:
         example: status message
         type: string
@@ -90,6 +108,9 @@ definitions:
     properties:
       address:
         $ref: '#/definitions/datastruct.Address'
+      avoid_cache:
+        example: true
+        type: boolean
       name:
         example: Vasilisa&Drozzhi .ltd
         type: string
@@ -106,6 +127,12 @@ definitions:
     type: object
   datastruct.AddSupplierResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
+      status:
+        example: status message
+        type: string
       uid:
         type: string
     type: object
@@ -178,6 +205,9 @@ definitions:
     type: object
   datastruct.DeleteClientRequest:
     properties:
+      avoid_cache:
+        example: true
+        type: boolean
       uid:
         example: 4988150e-1c82-490f-8c07-ee74ace2dd14
         type: string
@@ -186,12 +216,18 @@ definitions:
     type: object
   datastruct.DeleteClientResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       status:
         example: status message
         type: string
     type: object
   datastruct.DeleteImageRequest:
     properties:
+      avoid_cache:
+        example: true
+        type: boolean
       uid:
         example: 376de312-5bcb-4320-8ba3-bd2050548229
         type: string
@@ -200,12 +236,18 @@ definitions:
     type: object
   datastruct.DeleteImageResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       status:
         example: status message
         type: string
     type: object
   datastruct.DeleteProductRequest:
     properties:
+      avoid_cache:
+        example: true
+        type: boolean
       uid:
         example: c85a189d-d173-42e2-8e00-54395234d93d
         type: string
@@ -214,12 +256,18 @@ definitions:
     type: object
   datastruct.DeleteProductResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       status:
         example: status message
         type: string
     type: object
   datastruct.DeleteSupplierRequest:
     properties:
+      avoid_cache:
+        example: true
+        type: boolean
       uid:
         example: 609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4
         type: string
@@ -228,6 +276,9 @@ definitions:
     type: object
   datastruct.DeleteSupplierResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       status:
         example: status message
         type: string
@@ -252,6 +303,9 @@ definitions:
     type: object
   datastruct.GetClientsResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       clients:
         items:
           $ref: '#/definitions/datastruct.Client'
@@ -300,6 +354,9 @@ definitions:
     type: object
   datastruct.GetProductsResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       products:
         items:
           $ref: '#/definitions/datastruct.Product'
@@ -318,6 +375,9 @@ definitions:
     type: object
   datastruct.GetSuppliersResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       suppliers:
         items:
           $ref: '#/definitions/datastruct.Supplier'
@@ -327,6 +387,9 @@ definitions:
     properties:
       address:
         $ref: '#/definitions/datastruct.Address'
+      avoid_cache:
+        example: true
+        type: boolean
       uid:
         example: 4988150e-1c82-490f-8c07-ee74ace2dd14
         type: string
@@ -336,6 +399,9 @@ definitions:
     type: object
   datastruct.PatchClientAddressResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       status:
         example: status message
         type: string
@@ -400,6 +466,9 @@ definitions:
     type: object
   datastruct.UpdateImageResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       status:
         example: status message
         type: string
@@ -408,6 +477,9 @@ definitions:
     properties:
       address:
         $ref: '#/definitions/datastruct.Address'
+      avoid_cache:
+        example: true
+        type: boolean
       uid:
         example: 609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4
         type: string
@@ -417,6 +489,9 @@ definitions:
     type: object
   datastruct.UpdateSupplierAddressResponse:
     properties:
+      cached:
+        example: false
+        type: boolean
       status:
         example: status message
         type: string
@@ -541,6 +616,11 @@ paths:
         in: query
         name: limit
         required: true
+        type: string
+      - description: avoid_cache
+        example: "true"
+        in: query
+        name: avoid_cache
         type: string
       produces:
       - application/json
@@ -677,6 +757,11 @@ paths:
         name: image
         required: true
         type: file
+      - description: avoid_cache
+        example: "true"
+        in: query
+        name: avoid_cache
+        type: string
       produces:
       - application/json
       responses:
@@ -710,6 +795,11 @@ paths:
         name: image
         required: true
         type: file
+      - description: avoid_cache
+        example: "true"
+        in: query
+        name: avoid_cache
+        type: string
       produces:
       - application/json
       responses:
@@ -899,6 +989,11 @@ paths:
         name: limit
         required: true
         type: string
+      - description: avoid_cache
+        example: "true"
+        in: query
+        name: avoid_cache
+        type: string
       produces:
       - application/json
       responses:
@@ -1054,6 +1149,11 @@ paths:
         in: query
         name: limit
         required: true
+        type: string
+      - description: avoid_cache
+        example: "true"
+        in: query
+        name: avoid_cache
         type: string
       produces:
       - application/json

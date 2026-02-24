@@ -3,8 +3,10 @@ package supports
 import (
 	"encoding/json"
 	"fmt"
+	"hash/fnv"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 
@@ -147,4 +149,26 @@ func GetDateAsFileName(t time.Time) string {
 		strings.ReplaceAll(
 			t.Format(time.DateTime), " ", "_"),
 		":", "-")
+}
+
+func GetHash(data []byte) string {
+	h := fnv.New64a()
+	h.Write(data)
+	return strconv.FormatUint(h.Sum64(), 10)
+}
+
+func Concat(ss ...string) string {
+	length := 0
+	for i := range ss {
+		length += len(ss[i])
+	}
+
+	var b strings.Builder
+	b.Grow(length)
+
+	for i := range ss {
+		b.WriteString(ss[i])
+	}
+
+	return b.String()
 }

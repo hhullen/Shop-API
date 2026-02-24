@@ -20,6 +20,8 @@ func TestAddClient(t *testing.T) {
 
 		res := &ds.AddClientResponse{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.clientStorageMock.EXPECT().AddClient(gomock.Any()).Return(res, nil)
 
 		resp := s.srv.AddClient(req)
@@ -33,6 +35,7 @@ func TestAddClient(t *testing.T) {
 
 		req := &ds.AddClientRequest{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
 		s.clientStorageMock.EXPECT().AddClient(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
 
@@ -53,6 +56,8 @@ func TestDeleteClient(t *testing.T) {
 
 		res := &ds.DeleteClientResponse{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.clientStorageMock.EXPECT().DeleteClient(gomock.Any()).Return(res, nil)
 
 		resp := s.srv.DeleteClient(req)
@@ -66,6 +71,7 @@ func TestDeleteClient(t *testing.T) {
 
 		req := &ds.DeleteClientRequest{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
 		s.clientStorageMock.EXPECT().DeleteClient(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
 
@@ -86,6 +92,8 @@ func TestGetClients(t *testing.T) {
 
 		res := &ds.GetClientsResponse{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.clientStorageMock.EXPECT().GetClients(gomock.Any()).Return(res, nil)
 
 		resp := s.srv.GetClients(req)
@@ -99,6 +107,7 @@ func TestGetClients(t *testing.T) {
 
 		req := &ds.GetClientsRequest{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
 		s.clientStorageMock.EXPECT().GetClients(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
 
@@ -136,21 +145,23 @@ func TestGetClientsByName(t *testing.T) {
 
 		req := &ds.GetClientsByNameRequest{}
 
-		res := &ds.GetClientsByNameResponse{}
-
 		name := "Name"
 		surname := "Surname"
 		cached := true
 		getCached := func(key string, v any) (bool, error) {
-			vv := v.(*ds.GetClientsByNameResponse)
-			vv.Clients = append(vv.Clients, ds.Client{
-				Name:    name,
-				Surname: surname,
-			})
+			targetPtr := v.(**ds.GetClientsByNameResponse)
+			mockResp := &ds.GetClientsByNameResponse{
+				Clients: []ds.Client{
+					{Name: name, Surname: surname},
+				},
+			}
+
+			*targetPtr = mockResp
+
 			return cached, nil
 		}
 
-		s.cacheMock.EXPECT().Read(gomock.Any(), res).DoAndReturn(getCached)
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).DoAndReturn(getCached)
 
 		resp := s.srv.GetClientsByName(req)
 		require.NotNil(t, resp)
@@ -165,7 +176,7 @@ func TestGetClientsByName(t *testing.T) {
 		s := NewTestService(t)
 
 		req := &ds.GetClientsByNameRequest{
-			AvoidCache: true,
+			AvoidCacheFlag: ds.AvoidCacheFlag{Flag: true},
 		}
 
 		res := &ds.GetClientsByNameResponse{}
@@ -247,6 +258,8 @@ func TestPatchClientAddress(t *testing.T) {
 
 		res := &ds.PatchClientAddressResponse{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.clientStorageMock.EXPECT().PatchClientAddress(gomock.Any()).Return(res, nil)
 
 		resp := s.srv.PatchClientAddress(req)
@@ -260,6 +273,7 @@ func TestPatchClientAddress(t *testing.T) {
 
 		req := &ds.PatchClientAddressRequest{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
 		s.clientStorageMock.EXPECT().PatchClientAddress(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
 

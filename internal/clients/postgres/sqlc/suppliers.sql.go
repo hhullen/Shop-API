@@ -139,9 +139,8 @@ func (q *Queries) GetSuppliersPage(ctx context.Context, arg GetSuppliersPagePara
 const insertSupplier = `-- name: InsertSupplier :one
 INSERT INTO suppliers (uid, name, phone_number, address_id)
 VALUES ($1, $2, $3, $4)
-ON CONFLICT (name, address_id)
-DO UPDATE SET
-    name = EXCLUDED.name
+ON CONFLICT (uid)
+DO NOTHING
 RETURNING uid
 `
 

@@ -127,3 +127,17 @@ func TestGetDateAsFileName(t *testing.T) {
 	require.False(t, strings.Contains(dd, ":"))
 	require.False(t, strings.Contains(dd, " "))
 }
+
+func TestGetHash(t *testing.T) {
+	t.Parallel()
+	bb := []byte("sdewsgsdf")
+	hash := GetHash(bb)
+	require.NotEmpty(t, hash)
+}
+
+func TestConcat(t *testing.T) {
+	t.Parallel()
+
+	res := Concat("\"", "Cat", "_", "Dog", "\"")
+	require.Equal(t, res, "\"Cat_Dog\"")
+}

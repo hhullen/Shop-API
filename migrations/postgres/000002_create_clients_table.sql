@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS clients (
     registration_date TIMESTAMPTZ NOT NULL,
     address_id INT NOT NULL REFERENCES addresses(id) ON DELETE CASCADE,
 
-    UNIQUE(client_name, client_surname, birthday, gender, registration_date, address_id)
+    UNIQUE(uid)
 );
 
 -- +goose StatementEnd

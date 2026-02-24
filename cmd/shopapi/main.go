@@ -14,6 +14,8 @@ import (
 	"shopapi/internal/mem_cache"
 	"shopapi/internal/service"
 	"shopapi/internal/supports"
+
+	go_redis "github.com/redis/go-redis/v9"
 )
 
 // @title           Shop API
@@ -51,7 +53,8 @@ func main() {
 	if !supports.IsInContainer() {
 		cacher = mem_cache.NewCache()
 	} else {
-		c, err := redis.NewRedisConn(ctx)
+		var c *go_redis.Client
+		c, err = redis.NewRedisConn(ctx)
 		if err != nil {
 			log.Fatal(err)
 		}

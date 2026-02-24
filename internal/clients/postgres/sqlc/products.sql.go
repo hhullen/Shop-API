@@ -152,11 +152,8 @@ const insertProduct = `-- name: InsertProduct :one
 INSERT INTO products (uid, name, category, price,
     available_stock, last_update_date, supplier_id, image_id)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-ON CONFLICT (name, category, supplier_id)
-DO UPDATE SET
-    price = EXCLUDED.price,
-    available_stock = products.available_stock + EXCLUDED.available_stock,
-    last_update_date = EXCLUDED.last_update_date
+ON CONFLICT (uid)
+DO NOTHING
 RETURNING uid
 `
 

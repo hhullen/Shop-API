@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"fmt"
 	ds "shopapi/internal/datastruct"
+	"shopapi/internal/supports"
 	"strings"
 )
 
@@ -23,6 +23,10 @@ type ILogger interface {
 type ICache interface {
 	Read(key string, v any) (bool, error)
 	Write(key string, v any) error
+}
+
+type ICachedState interface {
+	SetCached(bool)
 }
 
 type IClientStorage interface {
@@ -85,7 +89,7 @@ func NewService(ctx context.Context, l ILogger, c ICache,
 
 func (s *Service) logHandlerStatus(handlerName, status string) {
 	if status != "" {
-		s.logger.InfoKV(fmt.Sprintf("%s status", handlerName), "status", status)
+		s.logger.InfoKV(supports.Concat(handlerName, " status"), "status", status)
 	}
 }
 
@@ -104,4 +108,36 @@ func makeCacheKey(vv ...string) string {
 	}
 
 	return b.String()
+}
+
+func execWithCache[RespT ICachedState](s *Service, key string, avoidCache bool, fetch func() (RespT, error)) (RespT, error) {
+	var response RespT
+	var cached bool
+	var err error
+
+	if !avoidCache {
+		cached, err = s.cache.Read(key, &response)
+		if err != nil {
+			s.logger.ErrorKV("failed reading cache", "message", err.Error())
+		}
+	}
+
+	if cached {
+		response.SetCached(true)
+		return response, nil
+	}
+
+	response, err = fetch()
+	if err != nil {
+		var empty RespT
+		return empty, err
+	}
+
+	err = s.cache.Write(key, response)
+	if err != nil {
+		s.logger.ErrorKV("failed writing cache", "message", err.Error())
+	}
+	response.SetCached(false)
+
+	return response, nil
 }

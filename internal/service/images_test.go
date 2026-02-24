@@ -22,6 +22,8 @@ func TestAddImage(t *testing.T) {
 
 		res := &ds.AddImageResponse{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.imageStorageMock.EXPECT().AddImage(gomock.Any()).Return(res, nil)
 
 		resp := s.srv.AddImage(req)
@@ -35,6 +37,7 @@ func TestAddImage(t *testing.T) {
 
 		req := &ds.AddImageRequest{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
 		s.imageStorageMock.EXPECT().AddImage(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
 
@@ -57,6 +60,8 @@ func TestUpdateImage(t *testing.T) {
 			Status: ds.Status{Message: "status"},
 		}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.imageStorageMock.EXPECT().UpdateImage(gomock.Any()).Return(res, nil)
 		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
 
@@ -71,6 +76,7 @@ func TestUpdateImage(t *testing.T) {
 
 		req := &ds.UpdateImageRequest{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
 		s.imageStorageMock.EXPECT().UpdateImage(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
 
@@ -93,6 +99,8 @@ func TestDeleteImage(t *testing.T) {
 			Status: ds.Status{Message: "status"},
 		}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.imageStorageMock.EXPECT().DeleteImage(gomock.Any()).Return(res, nil)
 		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
 
@@ -107,6 +115,7 @@ func TestDeleteImage(t *testing.T) {
 
 		req := &ds.DeleteImageRequest{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
 		s.imageStorageMock.EXPECT().DeleteImage(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
 
@@ -147,7 +156,7 @@ func TestGetProductImage(t *testing.T) {
 		s := NewTestService(t)
 
 		req := &ds.GetProductImageRequest{
-			AvoidCache: true,
+			AvoidCacheFlag: ds.AvoidCacheFlag{Flag: true},
 		}
 
 		res := &ds.GetProductImageResponse{
@@ -173,10 +182,12 @@ func TestGetProductImage(t *testing.T) {
 		uid := uuid.New()
 		cached := true
 		getCached := func(key string, v any) (bool, error) {
-			vv := v.(*ds.GetProductImageResponse)
+			target := v.(**ds.GetProductImageResponse)
+			vv := &ds.GetProductImageResponse{}
 			vv.Image = supports.TestImage
 			vv.Uid = &uid
 			vv.Status = ds.Status{Message: "status"}
+			*target = vv
 			return cached, nil
 		}
 
@@ -239,7 +250,7 @@ func TestGetProductImage(t *testing.T) {
 
 		s := NewTestService(t)
 
-		req := &ds.GetProductImageRequest{AvoidCache: true}
+		req := &ds.GetProductImageRequest{AvoidCacheFlag: ds.AvoidCacheFlag{Flag: true}}
 
 		s.imageStorageMock.EXPECT().GetProductImage(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
@@ -280,7 +291,7 @@ func TestGetImage(t *testing.T) {
 
 		s := NewTestService(t)
 
-		req := &ds.GetImageRequest{AvoidCache: true}
+		req := &ds.GetImageRequest{AvoidCacheFlag: ds.AvoidCacheFlag{Flag: true}}
 
 		res := &ds.GetImageResponse{
 			Status: ds.Status{Message: "status"},
@@ -305,10 +316,12 @@ func TestGetImage(t *testing.T) {
 		uid := uuid.New()
 		cached := true
 		getCached := func(key string, v any) (bool, error) {
-			vv := v.(*ds.GetImageResponse)
+			target := v.(**ds.GetImageResponse)
+			vv := &ds.GetImageResponse{}
 			vv.Image = supports.TestImage
 			vv.Uid = &uid
 			vv.Status = ds.Status{Message: "status"}
+			*target = vv
 			return cached, nil
 		}
 
@@ -371,7 +384,7 @@ func TestGetImage(t *testing.T) {
 
 		s := NewTestService(t)
 
-		req := &ds.GetImageRequest{AvoidCache: true}
+		req := &ds.GetImageRequest{AvoidCacheFlag: ds.AvoidCacheFlag{Flag: true}}
 
 		s.imageStorageMock.EXPECT().GetImage(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())

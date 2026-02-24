@@ -22,6 +22,8 @@ func TestAddProduct(t *testing.T) {
 			Status: ds.Status{Message: "status"},
 		}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.productStorageMock.EXPECT().AddProduct(gomock.Any()).Return(res, nil)
 		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
 
@@ -36,6 +38,7 @@ func TestAddProduct(t *testing.T) {
 
 		req := &ds.AddProductRequest{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
 		s.productStorageMock.EXPECT().AddProduct(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
 
@@ -118,12 +121,15 @@ func TestGetProduct(t *testing.T) {
 		name := "name"
 		category := "category"
 		getCached := func(key string, v any) (bool, error) {
-			vv := v.(*ds.GetProductResponse)
+			target := v.(**ds.GetProductResponse)
+			vv := &ds.GetProductResponse{}
 			vv.Product = &ds.Product{
 				Name:     name,
 				Category: category,
 			}
 			vv.Status = ds.Status{Message: "status"}
+
+			*target = vv
 			return cached, nil
 		}
 
@@ -142,7 +148,7 @@ func TestGetProduct(t *testing.T) {
 
 		s := NewTestService(t)
 
-		req := &ds.GetProductRequest{AvoidCache: true}
+		req := &ds.GetProductRequest{AvoidCacheFlag: ds.AvoidCacheFlag{Flag: true}}
 
 		res := &ds.GetProductResponse{
 			Status: ds.Status{Message: "status"},
@@ -206,7 +212,7 @@ func TestGetProduct(t *testing.T) {
 
 		s := NewTestService(t)
 
-		req := &ds.GetProductRequest{AvoidCache: true}
+		req := &ds.GetProductRequest{AvoidCacheFlag: ds.AvoidCacheFlag{Flag: true}}
 
 		s.productStorageMock.EXPECT().GetProduct(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
@@ -228,6 +234,8 @@ func TestGetProducts(t *testing.T) {
 
 		res := &ds.GetProductsResponse{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.productStorageMock.EXPECT().GetProducts(gomock.Any()).Return(res, nil)
 
 		resp := s.srv.GetProducts(req)
@@ -241,6 +249,7 @@ func TestGetProducts(t *testing.T) {
 
 		req := &ds.GetProductsRequest{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
 		s.productStorageMock.EXPECT().GetProducts(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
 
@@ -263,6 +272,8 @@ func TestDeleteProduct(t *testing.T) {
 			Status: ds.Status{Message: "status"},
 		}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.productStorageMock.EXPECT().DeleteProduct(gomock.Any()).Return(res, nil)
 		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
 
@@ -277,6 +288,7 @@ func TestDeleteProduct(t *testing.T) {
 
 		req := &ds.DeleteProductRequest{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
 		s.productStorageMock.EXPECT().DeleteProduct(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
 

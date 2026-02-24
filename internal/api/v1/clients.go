@@ -93,8 +93,9 @@ func (a *API) GetClientsByName(w http.ResponseWriter, r *http.Request) {
 // @Description  Возвращает список клиентов. Если offset limit равны 0, вернет список всех клиентов
 // @Tags         Client
 // @Produce      json
-// @Param        offset query string true "offset" example(0)
-// @Param        limit  query string true "limit" example(10)
+// @Param        offset       query  string true  "offset"      example(0)
+// @Param        limit        query  string true  "limit"       example(10)
+// @Param        avoid_cache  query  string false "avoid_cache" example(true)
 // @Success      200  {object}  ds.GetClientsResponse
 // @Failure      400  {object}  ds.Status
 // @Failure      500  {object}  ds.Status

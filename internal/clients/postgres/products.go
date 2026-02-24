@@ -28,11 +28,10 @@ func (c *Client) AddProduct(req *ds.AddProductRequest) (resp *ds.AddProductRespo
 			return nil
 		}
 
-		uid := supports.GetUUIDIfEmpty(req.Uid)
 		lastUpdate := supports.GetNowIfZero(time.Time(req.LastUpdateDate))
 
-		uid, err = qtx.InsertProduct(ctx, sqlc.InsertProductParams{
-			Uid:            uid,
+		uid, err := qtx.InsertProduct(ctx, sqlc.InsertProductParams{
+			Uid:            supports.GetUUIDIfEmpty(req.Uid),
 			Name:           req.Name,
 			Category:       req.Category,
 			Price:          toDBPrice(req.Price),
@@ -42,12 +41,16 @@ func (c *Client) AddProduct(req *ds.AddProductRequest) (resp *ds.AddProductRespo
 			ImageID:        req.ImageUid,
 		})
 		if err != nil {
-			return err
+			if !errors.Is(err, sql.ErrNoRows) {
+				return err
+			}
+			resp = &ds.AddProductResponse{
+				Status: ds.Status{Message: ds.StatusAlreadyExists},
+			}
+			return nil
 		}
 
-		resp = &ds.AddProductResponse{
-			Uid: &uid,
-		}
+		resp = &ds.AddProductResponse{Uid: &uid}
 
 		return nil
 	})
@@ -181,5 +184,5 @@ func (c *Client) DeleteProduct(req *ds.DeleteProductRequest) (*ds.DeleteProductR
 		}
 	}
 
-	return &ds.DeleteProductResponse{}, nil
+	return &ds.DeleteProductResponse{Status: ds.Status{Message: ds.StatusOK}}, nil
 }

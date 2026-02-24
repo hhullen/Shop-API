@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS products (
     supplier_id UUID NOT NULL,
     image_id UUID NOT NULL,
 
-    UNIQUE("name", category, supplier_id)
+    UNIQUE(uid)
 );
 
 -- +goose StatementEnd

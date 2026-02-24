@@ -24,8 +24,9 @@ func (a *API) setupImagesHandlers(router IRouter) {
 // @Tags         Image
 // @Accept       mpfd
 // @Produce      json
-// @Param        uid   formData  string              false "uid" example("376de312-5bcb-4320-8ba3-bd2050548229")
-// @Param        image formData  file                true  "Файл изображения"
+// @Param        uid            formData  string  false "uid"              example("376de312-5bcb-4320-8ba3-bd2050548229")
+// @Param        image          formData  file    true  "Файл изображения"
+// @Param        avoid_cache    query     string  false "avoid_cache"      example(true)
 // @Success      200   {object}  ds.AddImageResponse
 // @Failure      400   {object}  ds.AddImageResponse
 // @Failure      500   {object}  ds.Status
@@ -47,8 +48,9 @@ func (a *API) PutImage(w http.ResponseWriter, r *http.Request) {
 // @Tags         Image
 // @Accept       mpfd
 // @Produce      json
-// @Param        uid   formData  string                 true "uid" example("376de312-5bcb-4320-8ba3-bd2050548229")
-// @Param        image formData  file                   true "Файл изображения"
+// @Param        uid            formData  string  true  "uid"              example("376de312-5bcb-4320-8ba3-bd2050548229")
+// @Param        image          formData  file    true  "Файл изображения"
+// @Param        avoid_cache    query     string  false "avoid_cache"      example(true)
 // @Success      200   {object}  ds.UpdateImageResponse
 // @Failure      400   {object}  ds.UpdateImageResponse
 // @Failure      500   {object}  ds.Status
@@ -91,7 +93,7 @@ func (a *API) GetProductImage(w http.ResponseWriter, r *http.Request) {
 // @Description  Возвращает изображение
 // @Tags         Image
 // @Produce      application/octet-stream
-// @Param        uid            query     string true  "uid" example("376de312-5bcb-4320-8ba3-bd2050548229")
+// @Param        uid            query     string true  "uid"         example("376de312-5bcb-4320-8ba3-bd2050548229")
 // @Param        avoid_cache    query     string false "avoid_cache" example(true)
 // @Success      200  {file}    binary
 // @Failure      400  {object}  ds.GetImageResponse

@@ -186,6 +186,13 @@ const docTemplate = `{
                         "name": "limit",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -342,6 +349,13 @@ const docTemplate = `{
                         "name": "image",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -436,6 +450,13 @@ const docTemplate = `{
                         "name": "image",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -716,6 +737,13 @@ const docTemplate = `{
                         "name": "limit",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -949,6 +977,13 @@ const docTemplate = `{
                         "name": "limit",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "true",
+                        "description": "avoid_cache",
+                        "name": "avoid_cache",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -989,6 +1024,10 @@ const docTemplate = `{
                 "address": {
                     "$ref": "#/definitions/datastruct.Address"
                 },
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "birthday": {
                     "type": "string",
                     "example": "10.12.2011"
@@ -1022,6 +1061,14 @@ const docTemplate = `{
         "datastruct.AddClientResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                },
                 "uid": {
                     "type": "string"
                 }
@@ -1030,6 +1077,10 @@ const docTemplate = `{
         "datastruct.AddImageResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1053,6 +1104,10 @@ const docTemplate = `{
                 "available_stock": {
                     "type": "integer",
                     "example": 1023
+                },
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
                 },
                 "category": {
                     "type": "string",
@@ -1087,6 +1142,10 @@ const docTemplate = `{
         "datastruct.AddProductResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1107,6 +1166,10 @@ const docTemplate = `{
                 "address": {
                     "$ref": "#/definitions/datastruct.Address"
                 },
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "name": {
                     "type": "string",
                     "example": "Vasilisa\u0026Drozzhi .ltd"
@@ -1124,6 +1187,14 @@ const docTemplate = `{
         "datastruct.AddSupplierResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "status": {
+                    "type": "string",
+                    "example": "status message"
+                },
                 "uid": {
                     "type": "string"
                 }
@@ -1230,6 +1301,10 @@ const docTemplate = `{
                 "uid"
             ],
             "properties": {
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "uid": {
                     "type": "string",
                     "example": "4988150e-1c82-490f-8c07-ee74ace2dd14"
@@ -1239,6 +1314,10 @@ const docTemplate = `{
         "datastruct.DeleteClientResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1251,6 +1330,10 @@ const docTemplate = `{
                 "uid"
             ],
             "properties": {
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "uid": {
                     "type": "string",
                     "example": "376de312-5bcb-4320-8ba3-bd2050548229"
@@ -1260,6 +1343,10 @@ const docTemplate = `{
         "datastruct.DeleteImageResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1272,6 +1359,10 @@ const docTemplate = `{
                 "uid"
             ],
             "properties": {
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "uid": {
                     "type": "string",
                     "example": "c85a189d-d173-42e2-8e00-54395234d93d"
@@ -1281,6 +1372,10 @@ const docTemplate = `{
         "datastruct.DeleteProductResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1293,6 +1388,10 @@ const docTemplate = `{
                 "uid"
             ],
             "properties": {
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "uid": {
                     "type": "string",
                     "example": "609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"
@@ -1302,6 +1401,10 @@ const docTemplate = `{
         "datastruct.DeleteSupplierResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1337,6 +1440,10 @@ const docTemplate = `{
         "datastruct.GetClientsResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "clients": {
                     "type": "array",
                     "items": {
@@ -1408,6 +1515,10 @@ const docTemplate = `{
         "datastruct.GetProductsResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "products": {
                     "type": "array",
                     "items": {
@@ -1435,6 +1546,10 @@ const docTemplate = `{
         "datastruct.GetSuppliersResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "suppliers": {
                     "type": "array",
                     "items": {
@@ -1453,6 +1568,10 @@ const docTemplate = `{
                 "address": {
                     "$ref": "#/definitions/datastruct.Address"
                 },
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "uid": {
                     "type": "string",
                     "example": "4988150e-1c82-490f-8c07-ee74ace2dd14"
@@ -1462,6 +1581,10 @@ const docTemplate = `{
         "datastruct.PatchClientAddressResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1550,6 +1673,10 @@ const docTemplate = `{
         "datastruct.UpdateImageResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"
@@ -1566,6 +1693,10 @@ const docTemplate = `{
                 "address": {
                     "$ref": "#/definitions/datastruct.Address"
                 },
+                "avoid_cache": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "uid": {
                     "type": "string",
                     "example": "609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"
@@ -1575,6 +1706,10 @@ const docTemplate = `{
         "datastruct.UpdateSupplierAddressResponse": {
             "type": "object",
             "properties": {
+                "cached": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "status": {
                     "type": "string",
                     "example": "status message"

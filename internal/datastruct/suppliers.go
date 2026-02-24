@@ -35,45 +35,54 @@ type Supplier struct {
 
 type AddSupplierRequest struct {
 	Supplier
+	AvoidCacheFlag
 }
 
 type AddSupplierResponse struct {
+	Status
+	CachedStatus
 	Uid *uuid.UUID `json:"uid,omitempty"`
 }
 
 type UpdateSupplierAddressRequest struct {
+	AvoidCacheFlag
 	Uid     uuid.UUID `json:"uid" validate:"required"  example:"609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"`
 	Address *Address  `json:"address" validate:"required"`
 }
 
 type UpdateSupplierAddressResponse struct {
 	Status
+	CachedStatus
 }
 
 type DeleteSupplierRequest struct {
+	AvoidCacheFlag
 	Uid uuid.UUID `json:"uid" validate:"required" example:"609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"`
 }
 
 type DeleteSupplierResponse struct {
 	Status
+	CachedStatus
 }
 
 type GetSuppliersRequest struct {
+	AvoidCacheFlag
 	Limit  int64 `json:"limit" example:"10"`
 	Offset int64 `json:"offset" example:"0"`
 }
 
 type GetSuppliersResponse struct {
+	CachedStatus
 	Suppliers []Supplier `json:"suppliers"`
 }
 
 type GetSupplierRequest struct {
-	Uid        uuid.UUID `schema:"uid" validate:"required" example:"609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"`
-	AvoidCache bool      `schema:"avoid_cache,omitempty" example:"true"`
+	AvoidCacheFlag
+	Uid uuid.UUID `schema:"uid" validate:"required" example:"609ccf6f-7fb4-44bd-aa77-bc9e0e7572b4"`
 }
 
 type GetSupplierResponse struct {
 	Status
+	CachedStatus
 	Supplier *Supplier `json:"supplier,omitempty"`
-	Cached   bool      `json:"cached,omitempty" example:"false"`
 }

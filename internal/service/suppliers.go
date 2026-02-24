@@ -1,11 +1,24 @@
 package service
 
 import (
+	"encoding/json"
 	ds "shopapi/internal/datastruct"
+	"shopapi/internal/supports"
+	"strconv"
 )
 
 func (s *Service) AddSupplier(req *ds.AddSupplierRequest) *ds.AddSupplierResponse {
-	resp, err := s.supplierStorage.AddSupplier(req)
+	reqKey, err := json.Marshal(req.Supplier)
+	if err != nil {
+		s.logger.ErrorKV("failed making cache key", "message", err.Error(), "data", *req)
+		req.AvoidCacheFlag.Flag = true
+	}
+	key := makeCacheKey("AddSupplier", req.Uid.String(), supports.GetHash(reqKey))
+
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.AddSupplierResponse, error) {
+		return s.supplierStorage.AddSupplier(req)
+	})
+
 	if err != nil {
 		s.logger.ErrorKV("failed on AddSupplier", "message", err.Error())
 		return nil
@@ -15,7 +28,17 @@ func (s *Service) AddSupplier(req *ds.AddSupplierRequest) *ds.AddSupplierRespons
 }
 
 func (s *Service) UpdateSupplierAddress(req *ds.UpdateSupplierAddressRequest) *ds.UpdateSupplierAddressResponse {
-	resp, err := s.supplierStorage.UpdateSupplierAddress(req)
+	reqKey, err := json.Marshal(req.Address)
+	if err != nil {
+		s.logger.ErrorKV("failed making cache key", "message", err.Error(), "data", *req)
+		req.AvoidCacheFlag.Flag = true
+	}
+	key := makeCacheKey("UpdateSupplierAddress", req.Uid.String(), supports.GetHash(reqKey))
+
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.UpdateSupplierAddressResponse, error) {
+		return s.supplierStorage.UpdateSupplierAddress(req)
+	})
+
 	if err != nil {
 		s.logger.ErrorKV("failed on UpdateSupplierAddress", "message", err.Error())
 		return nil
@@ -27,7 +50,12 @@ func (s *Service) UpdateSupplierAddress(req *ds.UpdateSupplierAddressRequest) *d
 }
 
 func (s *Service) DeleteSupplier(req *ds.DeleteSupplierRequest) *ds.DeleteSupplierResponse {
-	resp, err := s.supplierStorage.DeleteSupplier(req)
+	key := makeCacheKey("DeleteSupplier", req.Uid.String())
+
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.DeleteSupplierResponse, error) {
+		return s.supplierStorage.DeleteSupplier(req)
+	})
+
 	if err != nil {
 		s.logger.ErrorKV("failed on DeleteSupplier", "message", err.Error())
 		return nil
@@ -39,7 +67,12 @@ func (s *Service) DeleteSupplier(req *ds.DeleteSupplierRequest) *ds.DeleteSuppli
 }
 
 func (s *Service) GetSuppliers(req *ds.GetSuppliersRequest) *ds.GetSuppliersResponse {
-	resp, err := s.supplierStorage.GetSuppliers(req)
+	key := makeCacheKey("GetSuppliers", strconv.FormatInt(req.Limit, 10), strconv.FormatInt(req.Offset, 10))
+
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.GetSuppliersResponse, error) {
+		return s.supplierStorage.GetSuppliers(req)
+	})
+
 	if err != nil {
 		s.logger.ErrorKV("failed on GetSuppliers", "message", err.Error())
 		return nil
@@ -49,32 +82,15 @@ func (s *Service) GetSuppliers(req *ds.GetSuppliersRequest) *ds.GetSuppliersResp
 }
 
 func (s *Service) GetSupplier(req *ds.GetSupplierRequest) (resp *ds.GetSupplierResponse) {
-	var cached bool
-	var err error
+	key := makeCacheKey("GetSupplier", req.Uid.String())
 
-	key := makeCacheKey(imagesCacheKey, req.Uid.String())
-	if !req.AvoidCache {
-		resp = &ds.GetSupplierResponse{}
-		cached, err = s.cache.Read(key, resp)
-		if err != nil {
-			s.logger.ErrorKV("failed reading cache on GetSupplier", "message", err.Error())
-		}
-	}
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.GetSupplierResponse, error) {
+		return s.supplierStorage.GetSupplier(req)
+	})
 
-	if !cached {
-		resp, err = s.supplierStorage.GetSupplier(req)
-		if err != nil {
-			s.logger.ErrorKV("failed on GetSupplier", "message", err.Error())
-			return nil
-		}
-
-		err = s.cache.Write(key, resp)
-		if err != nil {
-			s.logger.ErrorKV("failed writing cache on GetSupplier", "message", err.Error())
-		}
-		resp.Cached = false
-	} else {
-		resp.Cached = true
+	if err != nil {
+		s.logger.ErrorKV("failed on GetSupplier", "message", err.Error())
+		return nil
 	}
 
 	s.logHandlerStatus("GetSupplier", resp.GetStatus())

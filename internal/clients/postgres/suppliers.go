@@ -9,10 +9,8 @@ import (
 	"shopapi/internal/supports"
 )
 
-func (c *Client) AddSupplier(req *ds.AddSupplierRequest) (*ds.AddSupplierResponse, error) {
-	uid := supports.GetUUIDIfEmpty(req.Uid)
-
-	err := c.db.ExecTx(defaultTxOpt, func(ctx context.Context, qtx IQuerier) error {
+func (c *Client) AddSupplier(req *ds.AddSupplierRequest) (resp *ds.AddSupplierResponse, err error) {
+	err = c.db.ExecTx(defaultTxOpt, func(ctx context.Context, qtx IQuerier) error {
 		addresId, err := qtx.InsertAddress(ctx, sqlc.InsertAddressParams{
 			Country: req.Address.Country,
 			City:    req.Address.City,
@@ -22,26 +20,27 @@ func (c *Client) AddSupplier(req *ds.AddSupplierRequest) (*ds.AddSupplierRespons
 			return err
 		}
 
-		uid, err = qtx.InsertSupplier(ctx, sqlc.InsertSupplierParams{
-			Uid:         uid,
+		uid, err := qtx.InsertSupplier(ctx, sqlc.InsertSupplierParams{
+			Uid:         supports.GetUUIDIfEmpty(req.Uid),
 			Name:        req.Name,
 			PhoneNumber: string(req.PhoneNumber),
 			AddressID:   addresId,
 		})
 		if err != nil {
-			return err
+			if !errors.Is(err, sql.ErrNoRows) {
+				return err
+			}
+			resp = &ds.AddSupplierResponse{
+				Status: ds.Status{Message: ds.StatusAlreadyExists},
+			}
+			return nil
 		}
+		resp = &ds.AddSupplierResponse{Uid: &uid}
 
 		return nil
 	})
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &ds.AddSupplierResponse{
-		Uid: &uid,
-	}, nil
+	return
 }
 
 func (c *Client) UpdateSupplierAddress(req *ds.UpdateSupplierAddressRequest) (resp *ds.UpdateSupplierAddressResponse, err error) {
@@ -89,7 +88,9 @@ func (c *Client) UpdateSupplierAddress(req *ds.UpdateSupplierAddressRequest) (re
 			return err
 		}
 
-		resp = &ds.UpdateSupplierAddressResponse{}
+		resp = &ds.UpdateSupplierAddressResponse{
+			Status: ds.Status{Message: ds.StatusOK},
+		}
 
 		return nil
 	})
@@ -128,7 +129,7 @@ func (c *Client) DeleteSupplier(req *ds.DeleteSupplierRequest) (resp *ds.DeleteS
 			}
 		}
 
-		resp = &ds.DeleteSupplierResponse{}
+		resp = &ds.DeleteSupplierResponse{Status: ds.Status{Message: ds.StatusOK}}
 		return nil
 	})
 

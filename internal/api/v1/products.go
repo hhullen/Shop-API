@@ -67,7 +67,7 @@ func (a *API) DecreaseProduct(w http.ResponseWriter, r *http.Request) {
 // @Description  Возвращает продукт.
 // @Tags         Product
 // @Produce      json
-// @Param        uid            query  string  true  "uid" example("c85a189d-d173-42e2-8e00-54395234d93d")
+// @Param        uid            query  string  true  "uid"         example("c85a189d-d173-42e2-8e00-54395234d93d")
 // @Param        avoid_cache    query  string  false "avoid_cache" example(true)
 // @Success      200  {object}  ds.GetProductResponse
 // @Failure      400  {object}  ds.GetProductResponse
@@ -89,8 +89,9 @@ func (a *API) GetProduct(w http.ResponseWriter, r *http.Request) {
 // @Description  Возвращает список продуктов. Если offset limit равны 0, вернет список всех
 // @Tags         Product
 // @Produce      json
-// @Param        offset query    string                 true  "offset" example(0)
-// @Param        limit  query    string                 true  "limit" example(10)
+// @Param        offset      query  string true  "offset"      example(0)
+// @Param        limit       query  string true  "limit"       example(10)
+// @Param        avoid_cache query  string false "avoid_cache" example(true)
 // @Success      200    {object} ds.GetProductsResponse
 // @Failure      400    {object} ds.Status
 // @Failure      500    {object} ds.Status

@@ -41,9 +41,12 @@ type Client struct {
 
 type AddClientRequest struct {
 	Client
+	AvoidCacheFlag
 }
 
 type AddClientResponse struct {
+	Status
+	CachedStatus
 	Uid *uuid.UUID `json:"uid,omitempty"`
 }
 
@@ -54,38 +57,44 @@ type Address struct {
 }
 
 type DeleteClientRequest struct {
+	AvoidCacheFlag
 	Uid uuid.UUID `json:"uid" validate:"required" example:"4988150e-1c82-490f-8c07-ee74ace2dd14"`
 }
 
 type DeleteClientResponse struct {
 	Status
+	CachedStatus
 }
 
 type GetClientsByNameRequest struct {
-	Name       string `schema:"client_name" validate:"required" example:"Vasilisa"`
-	Surname    string `schema:"client_surname" validate:"required" example:"Kadyk"`
-	AvoidCache bool   `schema:"avoid_cache,omitempty" example:"true"`
+	AvoidCacheFlag
+	Name    string `schema:"client_name" validate:"required" example:"Vasilisa"`
+	Surname string `schema:"client_surname" validate:"required" example:"Kadyk"`
 }
 
 type GetClientsByNameResponse struct {
+	CachedStatus
 	Clients []Client `json:"clients"`
-	Cached  bool     `json:"cached,omitempty" example:"false"`
 }
 
 type GetClientsRequest struct {
+	AvoidCacheFlag
 	Limit  int64 `schema:"limit" example:"10"`
 	Offset int64 `schema:"offset" example:"0"`
 }
 
 type GetClientsResponse struct {
+	CachedStatus
 	Clients []Client `json:"clients"`
 }
 
 type PatchClientAddressRequest struct {
+	AvoidCacheFlag
 	Uid     uuid.UUID `json:"uid" validate:"required" example:"4988150e-1c82-490f-8c07-ee74ace2dd14"`
 	Address *Address  `json:"address" validate:"required"`
 }
 
 type PatchClientAddressResponse struct {
+	CachedStatus
 	Status
 }

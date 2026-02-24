@@ -1,11 +1,24 @@
 package service
 
 import (
+	"encoding/json"
 	ds "shopapi/internal/datastruct"
+	"shopapi/internal/supports"
+	"strconv"
 )
 
 func (s *Service) AddProduct(req *ds.AddProductRequest) *ds.AddProductResponse {
-	resp, err := s.productStorage.AddProduct(req)
+	reqKey, err := json.Marshal(req.Product)
+	if err != nil {
+		s.logger.ErrorKV("failed making cache key", "message", err.Error(), "data", *req)
+		req.AvoidCacheFlag.Flag = true
+	}
+	key := makeCacheKey("AddProduct", req.Uid.String(), supports.GetHash(reqKey))
+
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.AddProductResponse, error) {
+		return s.productStorage.AddProduct(req)
+	})
+
 	if err != nil {
 		s.logger.ErrorKV("failed on AddProduct", "message", err.Error())
 		return nil
@@ -17,6 +30,7 @@ func (s *Service) AddProduct(req *ds.AddProductRequest) *ds.AddProductResponse {
 }
 
 func (s *Service) DecreaseProducts(req *ds.DecreaseProductsRequest) *ds.DecreaseProductsResponse {
+
 	resp, err := s.productStorage.DecreaseProducts(req)
 	if err != nil {
 		s.logger.ErrorKV("failed on DecreaseProducts", "message", err.Error())
@@ -29,32 +43,15 @@ func (s *Service) DecreaseProducts(req *ds.DecreaseProductsRequest) *ds.Decrease
 }
 
 func (s *Service) GetProduct(req *ds.GetProductRequest) (resp *ds.GetProductResponse) {
-	var cached bool
-	var err error
+	key := makeCacheKey("GetProduct", req.Uid.String())
 
-	key := makeCacheKey(imagesCacheKey, req.Uid.String())
-	if !req.AvoidCache {
-		resp = &ds.GetProductResponse{}
-		cached, err = s.cache.Read(key, resp)
-		if err != nil {
-			s.logger.ErrorKV("failed reading cache on GetProduct", "message", err.Error())
-		}
-	}
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.GetProductResponse, error) {
+		return s.productStorage.GetProduct(req)
+	})
 
-	if !cached {
-		resp, err = s.productStorage.GetProduct(req)
-		if err != nil {
-			s.logger.ErrorKV("failed on GetProduct", "message", err.Error())
-			return nil
-		}
-
-		err = s.cache.Write(key, resp)
-		if err != nil {
-			s.logger.ErrorKV("failed writing cache on GetProduct", "message", err.Error())
-		}
-		resp.Cached = false
-	} else {
-		resp.Cached = true
+	if err != nil {
+		s.logger.ErrorKV("failed on GetProduct", "message", err.Error())
+		return nil
 	}
 
 	s.logHandlerStatus("GetProduct", resp.GetStatus())
@@ -63,7 +60,12 @@ func (s *Service) GetProduct(req *ds.GetProductRequest) (resp *ds.GetProductResp
 }
 
 func (s *Service) GetProducts(req *ds.GetProductsRequest) *ds.GetProductsResponse {
-	resp, err := s.productStorage.GetProducts(req)
+	key := makeCacheKey("GetProducts", strconv.FormatInt(req.Limit, 10), strconv.FormatInt(req.Offset, 10))
+
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.GetProductsResponse, error) {
+		return s.productStorage.GetProducts(req)
+	})
+
 	if err != nil {
 		s.logger.ErrorKV("failed on GetProducts", "message", err.Error())
 		return nil
@@ -73,7 +75,12 @@ func (s *Service) GetProducts(req *ds.GetProductsRequest) *ds.GetProductsRespons
 }
 
 func (s *Service) DeleteProduct(req *ds.DeleteProductRequest) *ds.DeleteProductResponse {
-	resp, err := s.productStorage.DeleteProduct(req)
+	key := makeCacheKey("DeleteProduct", req.Uid.String())
+
+	resp, err := execWithCache(s, key, req.AvoidCache(), func() (*ds.DeleteProductResponse, error) {
+		return s.productStorage.DeleteProduct(req)
+	})
+
 	if err != nil {
 		s.logger.ErrorKV("failed on DeleteProduct", "message", err.Error())
 		return nil

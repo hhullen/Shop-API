@@ -21,6 +21,8 @@ func TestAddSupplier(t *testing.T) {
 
 		res := &ds.AddSupplierResponse{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.supplierStorageMock.EXPECT().AddSupplier(gomock.Any()).Return(res, nil)
 
 		resp := s.srv.AddSupplier(req)
@@ -34,6 +36,7 @@ func TestAddSupplier(t *testing.T) {
 
 		req := &ds.AddSupplierRequest{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
 		s.supplierStorageMock.EXPECT().AddSupplier(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
 
@@ -56,6 +59,8 @@ func TestUpdateSupplierAddress(t *testing.T) {
 			Status: ds.Status{Message: "status"},
 		}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.supplierStorageMock.EXPECT().UpdateSupplierAddress(gomock.Any()).Return(res, nil)
 		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
 
@@ -70,6 +75,7 @@ func TestUpdateSupplierAddress(t *testing.T) {
 
 		req := &ds.UpdateSupplierAddressRequest{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
 		s.supplierStorageMock.EXPECT().UpdateSupplierAddress(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
 
@@ -92,6 +98,8 @@ func TestDeleteSupplier(t *testing.T) {
 			Status: ds.Status{Message: "status"},
 		}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.supplierStorageMock.EXPECT().DeleteSupplier(gomock.Any()).Return(res, nil)
 		s.loggerMock.EXPECT().InfoKV(gomock.Any(), gomock.All())
 
@@ -106,6 +114,7 @@ func TestDeleteSupplier(t *testing.T) {
 
 		req := &ds.DeleteSupplierRequest{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
 		s.supplierStorageMock.EXPECT().DeleteSupplier(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
 
@@ -126,6 +135,8 @@ func TestGetSuppliers(t *testing.T) {
 
 		res := &ds.GetSuppliersResponse{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
+		s.cacheMock.EXPECT().Write(gomock.Any(), gomock.Any()).Return(nil)
 		s.supplierStorageMock.EXPECT().GetSuppliers(gomock.Any()).Return(res, nil)
 
 		resp := s.srv.GetSuppliers(req)
@@ -139,6 +150,7 @@ func TestGetSuppliers(t *testing.T) {
 
 		req := &ds.GetSuppliersRequest{}
 
+		s.cacheMock.EXPECT().Read(gomock.Any(), gomock.Any()).Return(false, nil)
 		s.supplierStorageMock.EXPECT().GetSuppliers(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
 
@@ -178,7 +190,7 @@ func TestGetSupplier(t *testing.T) {
 
 		s := NewTestService(t)
 
-		req := &ds.GetSupplierRequest{AvoidCache: true}
+		req := &ds.GetSupplierRequest{AvoidCacheFlag: ds.AvoidCacheFlag{Flag: true}}
 
 		res := &ds.GetSupplierResponse{
 			Status: ds.Status{Message: "status"},
@@ -204,12 +216,14 @@ func TestGetSupplier(t *testing.T) {
 		name := "name"
 		uid := uuid.New()
 		getCached := func(key string, v any) (bool, error) {
-			vv := v.(*ds.GetSupplierResponse)
+			target := v.(**ds.GetSupplierResponse)
+			vv := &ds.GetSupplierResponse{}
 			vv.Supplier = &ds.Supplier{
 				Name: name,
 				Uid:  uid,
 			}
 			vv.Status = ds.Status{Message: "status"}
+			*target = vv
 			return cached, nil
 		}
 
@@ -272,7 +286,7 @@ func TestGetSupplier(t *testing.T) {
 
 		s := NewTestService(t)
 
-		req := &ds.GetSupplierRequest{AvoidCache: true}
+		req := &ds.GetSupplierRequest{AvoidCacheFlag: ds.AvoidCacheFlag{Flag: true}}
 
 		s.supplierStorageMock.EXPECT().GetSupplier(gomock.Any()).Return(nil, errTest)
 		s.loggerMock.EXPECT().ErrorKV(gomock.Any(), gomock.All())
